@@ -1,0 +1,21 @@
+.nav-link {
+    font-size: 18px;
+    color:white;
+    font-weight: 500;
+    margin-top: 15px;
+  }
+
+.navbar.navbar-expand-lg{
+    background: linear-gradient(to right, #bfc754, #a9b85d);
+    border-bottom:1px solid#d1d16fbd;
+}
+
+button{
+    border:white 1px solid;
+    background-color: transparent;
+    color:white;
+    border-radius: 10px;
+    height: 45px;
+    width: 100px;
+    font-size: 17px;
+}

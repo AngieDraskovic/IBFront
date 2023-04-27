@@ -1,0 +1,56 @@
+<div class="container" id="container" [ngClass]="{'right-panel-active': isSignUp}" *ngIf="!activating">
+    <div class="form-container sign-up-container">
+        <form action="#">
+            <h2>SIGN UP</h2> 
+            <input type="text" placeholder="Name" name="name" [(ngModel)]="name" required/>
+            <input type="text" placeholder="Surname" name="surname" [(ngModel)]="surname" required />
+            <input type="email" placeholder="Email" name="emailReg" [(ngModel)]="emailReg" required/>
+            <input type="text" placeholder="Phone number"  name="phone" [(ngModel)]="telephoneNumber" required/>
+            <input type="password" placeholder="Password" name="passwordReg" [(ngModel)]="passwordReg" required />
+
+            <div class="confirmation-method-container">
+                <p id="select">Select confirmation method:</p>
+                <label>
+                  <input type="radio" name="confirmationMethod" [(ngModel)]="confirmationMethod" value="email" checked>
+                  <span>via email</span>
+                </label>
+                <label>
+                  <input type="radio" name="confirmationMethod" [(ngModel)]="confirmationMethod" value="sms">
+                  <span>via SMS</span>
+                </label>
+              </div>
+
+            <button id="sign"  (click)="submit()"> Sign Up</button>
+        </form>
+    </div>
+    <div class="form-container sign-in-container">
+        <form action="#">
+            <h2>LOG IN</h2>
+            <input type="email" placeholder="Email" name="emailLog" [(ngModel)]="emailLog" required />
+            <input type="password" placeholder="Password" name="passwordLog" [(ngModel)]="passwordLog" />
+            <a href="#">Forgot your password?</a>
+            <button (click)="login()">Log In</button>
+        </form>
+    </div> 
+    <div class="overlay-container">
+        <div class="overlay">
+            <div class="overlay-panel overlay-left">
+                <h3>OR</h3>
+                <br>
+                <button class="ghost" (click)="toggleSignUp(false)" id="signIn">Log In</button>
+            </div>
+            <div class="overlay-panel overlay-right">
+                <h3>OR</h3>
+                <br>
+                <button class="ghost" (click)="toggleSignUp(true)" id="signUp">Sign Up</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="act" *ngIf="activating">
+    <label>Please enter your activation ID so that we can confirm your email:</label>
+    <input placeholder="Activation ID" name="activationId" [(ngModel)] = "activationId" id="inp">
+    <br>
+    <button mat-raised-button id="confirmBtn" (click)="submitActivation()">CONFIRM</button>
+</div>

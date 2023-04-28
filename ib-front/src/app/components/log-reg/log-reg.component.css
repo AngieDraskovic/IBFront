@@ -42,7 +42,8 @@ a {
 	color: #333;
 	font-size: 14px;
 	text-decoration: none;
-	margin: 15px 0;
+	margin-top: 15px;
+	margin-bottom: 4\px;
 }
 
 button {
@@ -250,8 +251,6 @@ h2{
 }
 
 
-
-/* Style the form inputs */
 input[type=text], input[type=email], input[type=password] {
 width: 100%;
 padding: 12px 20px;
@@ -262,7 +261,6 @@ border-bottom: 2px solid #ccc;
 }
   
 
-/* Style the form button when hovering over it */
 button:hover {
 opacity: 0.8;
 }
@@ -278,3 +276,35 @@ opacity: 0.8;
     margin-bottom: 10px;
 }
 
+h6{
+	color: #b3ab58;
+    font-size: 13px;
+	text-align: left;
+	font-style: italic;
+	width: 100%;
+	margin-left: 40px;
+}
+
+#opt{
+	margin-top: 10px;
+}
+
+#logBtn{
+	margin-top: 20px;
+}
+
+.card2 {
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    background:white;
+    border-radius: 12px;
+    border: 2px solid #dbd16a;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width:40%;
+    min-height: 260px;
+    padding: 30px 40px;
+    margin:0 auto;
+    margin-top: 150px;
+}

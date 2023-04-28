@@ -26,6 +26,20 @@ export class UserService {
   activateUser(activationId:string){
     return this.http.get<UserRequest>(environment.apiHost + 'api/user/activate/' + activationId);
   }
+
+  sendForgotPasswordCode(email:string, confirmationMethod:string){
+    return this.http.get(environment.apiHost + `api/user/resetPassword/${email}?confirmationMethod=${confirmationMethod}`);
+  }
+
+  changePassword(email:string, resetDTO:ResetPasswordDTO){
+    return this.http.put(environment.apiHost + `api/user/resetPassword/${email}`, resetDTO);
+  }
+}
+
+export interface ResetPasswordDTO{
+  newPassword:string,
+  newPasswordConfirm:string,
+  code:string
 }
 
 export interface UserRequest{

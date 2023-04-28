@@ -9,13 +9,15 @@ import { UserHomeComponent } from './components/user-home/user-home.component';
 import { AdminHomeComponent } from './components/admin-home/admin-home.component';
 import { NavbarComponent } from './components/navbar/navbar.component'; 
 import { TokenInterceptor } from './services/token.service';
+import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
 @NgModule({
   declarations: [
     AppComponent,
     LogRegComponent,
     UserHomeComponent,
     AdminHomeComponent,
-    NavbarComponent
+    NavbarComponent,
+    ForgotPasswordComponent
   ],
   imports: [
     BrowserModule,

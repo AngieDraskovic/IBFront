@@ -1,6 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { NavigationExtras, Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
 import { SharedService } from 'src/app/services/shared.service';
 import { UserRequest, UserService } from 'src/app/services/user.service';
@@ -65,11 +65,18 @@ export class LogRegComponent {
   submitActivation(){
     this.userService.activateUser(this.activationId).subscribe({
       next: (response) => {
-        this.sharedService.currentRole.next('USER');
         console.log(response);
         this.authService.login(this.emailReg, this.passwordReg).subscribe({
           next: ()=>{
-            this.router.navigate(['userHome']);
+            this.userService.getUser().subscribe((user) =>{
+              let role = user.authorityDTO.authorityName;
+              this.sharedService.currentRole.next(role);
+              if(role == "ROLE_USER"){
+                this.router.navigate(['userHome']);
+              }else if(role == "ROLE_ADMIN"){
+               this.router.navigate(['adminHome']);
+              }
+            }) 
           }
         });
     
@@ -81,7 +88,26 @@ export class LogRegComponent {
     });
   }
 
+  onForgotPasswordClick(){
+    const dropdown = document.getElementById('forgotPasswordDropdown');
+    if(dropdown!=null)
+    dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+  }
 
+  sendCodeForgot(method:string){
+    this.userService.sendForgotPasswordCode(this.emailLog, method).subscribe({
+      next: ()=>{
+      let email = this.emailLog;
+      const extras: NavigationExtras = { queryParams: { email } };
+      this.router.navigate(['reset-password'], extras)
+      },
+      error:(error) => {
+        this.handleError(error);
+      }
+    });
+
+  }
+  
   
   login() {
     this.authService.login(this.emailLog, this.passwordLog).subscribe(()=>(
@@ -96,7 +122,13 @@ export class LogRegComponent {
       }) 
     ),
     (error) => {
-      this.handleError(error);
+      if (error.status == 400 && error.error.message == "You have not confirmed your email/phone when registering") {
+        this.emailReg = this.emailLog;
+        this.passwordReg = this.passwordLog;
+        this.activating = true;
+    } else {
+        this.handleError(error);
+    }
     }
     );  
 

@@ -28,8 +28,12 @@
             <h2>LOG IN</h2>
             <input type="email" placeholder="Email" name="emailLog" [(ngModel)]="emailLog" required />
             <input type="password" placeholder="Password" name="passwordLog" [(ngModel)]="passwordLog" />
-            <a href="#">Forgot your password?</a>
-            <button (click)="login()">Log In</button>
+            <a (click)="onForgotPasswordClick()">Forgot your password?</a>
+            <div id="forgotPasswordDropdown" style="display:none">
+                <button id="opt" (click)="sendCodeForgot('email')" >SEND CODE VIA EMAIL</button>
+                <button id="opt" (click)="sendCodeForgot('sms')">SEND CODE VIA SMS</button>
+              </div>
+            <button (click)="login()" id = 'logBtn'>Log In</button>
         </form>
     </div> 
     <div class="overlay-container">
@@ -48,7 +52,7 @@
     </div>
 </div>
 
-<div id="act" *ngIf="activating">
+<div id="act" *ngIf="activating" class="card2">
     <label>Please enter your activation ID so that we can confirm your email:</label>
     <input placeholder="Activation ID" name="activationId" [(ngModel)] = "activationId" id="inp">
     <br>

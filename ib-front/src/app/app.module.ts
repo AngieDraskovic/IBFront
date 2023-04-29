@@ -10,6 +10,7 @@ import { AdminHomeComponent } from './components/admin-home/admin-home.component
 import { NavbarComponent } from './components/navbar/navbar.component'; 
 import { TokenInterceptor } from './services/token.service';
 import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
+import { CertSimpleViewComponent } from './components/cert-simple-view/cert-simple-view.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -17,7 +18,8 @@ import { ForgotPasswordComponent } from './components/forgot-password/forgot-pas
     UserHomeComponent,
     AdminHomeComponent,
     NavbarComponent,
-    ForgotPasswordComponent
+    ForgotPasswordComponent,
+    CertSimpleViewComponent
   ],
   imports: [
     BrowserModule,

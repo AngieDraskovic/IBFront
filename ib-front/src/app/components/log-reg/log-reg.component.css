@@ -43,7 +43,8 @@ a {
 	font-size: 14px;
 	text-decoration: none;
 	margin-top: 15px;
-	margin-bottom: 4\px;
+	margin-bottom: 4px;
+	cursor: pointer;
 }
 
 button {

@@ -1,0 +1,86 @@
+<main>
+  <div class="head-title">
+    <div class="left">
+      <h1>Dashboard</h1>
+      <ul class="breadcrumb">
+        <li>
+          <a href="#">Dashboard</a>
+        </li>
+        <li><i class='fa fa-regular fa-chevron-right'></i></li>
+        <li>
+          <a class="active" href="#">Home</a>
+        </li>
+      </ul>
+    </div>
+    <a (click)="openCertificateValidationDialog()" class="btn-download">
+      <i class='fa fa-solid fa-stamp'></i> &nbsp;
+      <span class="text">
+
+        Validate Certificate
+      </span>
+    </a>
+  </div>
+
+  <ul class="box-info">
+    <li>
+      <i class='fa fa-regular fa-certificate'></i>
+      <span class="text">
+						<h3>{{numberOfCertificates}}</h3>
+						<p>Certificates</p>
+					</span>
+    </li>
+    <li>
+      <i class='fa fa-solid fa-clock'></i>
+      <span class="text">
+						<h3>{{numberOfPendingCertificates}}</h3>
+						<p>Pending</p>
+					</span>
+    </li>
+    <li>
+      <i class='fa fa-solid fa-xmark'></i>
+      <span class="text">
+						<h3>{{numberOfRevokedCertificates}}</h3>
+						<p>Revoked</p>
+					</span>
+    </li>
+  </ul>
+
+
+  <div class="table-data">
+    <div class="order">
+      <div class="head">
+        <h3>Certificates</h3>
+        <i class='bx bx-search'></i>
+        <i class='bx bx-filter'></i>
+      </div>
+      <table>
+        <thead>
+        <tr>
+          <th>Owner</th>
+          <th>Type</th>
+          <th>Valid From</th>
+          <th>Valid To</th>
+          <th>Status</th>
+          <th class="button"></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let certificate of certificates">
+          <td>
+            <img ngSrc="assets/images/profile.png" width="60" height="40" alt="">
+            <p>{{ certificate.userEmail }}</p>
+          </td>
+          <td><span class="type">{{certificate.type}}</span></td>
+          <td>{{ certificate.validFrom | date:'dd-MM-yyyy' }}</td>
+          <td>{{ certificate.validTo | date:'dd-MM-yyyy' }}</td>
+          <td><span class="status {{ certificate.status.toLowerCase() }}">{{ certificate.status }}</span></td>
+          <td>
+            <i class='download-button fa-regular fa-file-arrow-down'
+               (click)="downloadCertificate(certificate.serialNumber)"></i>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</main>

@@ -1,10 +1,12 @@
 import {Component} from '@angular/core';
 import {AbstractControl, FormControl, FormGroup, ValidatorFn, Validators} from "@angular/forms";
-import {Credentials} from "../../model/credentials";
-import {AuthService} from "../../services/auth.service";
-import {RegistrationData} from "../../model/registration-data";
 import {NgToastService} from "ng-angular-popup";
-import {CustomError} from "../../../shared/error/custom-error";
+import {Credentials} from "../../interfaces/credentials";
+import {CustomError} from "../../../shared/interfaces/custom-error";
+import {RegistrationData} from "../../interfaces/registration-data";
+import {AuthService} from "../../services/auth.service";
+import {Router} from "@angular/router";
+import {Role} from "../../enums/role";
 
 @Component({
   selector: 'app-login-registration',
@@ -32,7 +34,7 @@ export class LoginRegistrationComponent {
     confirmPassword: new FormControl('', [Validators.required])
   }, {validators: [match('password', 'confirmPassword')]});
 
-  constructor(private authService: AuthService, private toastService: NgToastService) {
+  constructor(private authService: AuthService, private toastService: NgToastService, private router: Router) {
   }
 
   login() {
@@ -46,7 +48,13 @@ export class LoginRegistrationComponent {
     };
 
     this.authService.login(credentials).subscribe({
-      next: (token) => {
+      next: () => {
+        const user = this.authService.currentUserValue;
+        if (user?.role === Role.Admin) {
+          this.router.navigate(['/admin']);
+        } else if (user?.role === Role.User) {
+          this.router.navigate(['/user']);
+        }
       },
       error: (error: CustomError) => {
         if (error.status == 401 || error.status == 403) {

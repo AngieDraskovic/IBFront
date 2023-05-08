@@ -1,24 +1,27 @@
-import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
+import {NgModule} from '@angular/core';
+import {BrowserModule} from '@angular/platform-browser';
 
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
-import {AuthModule} from "./modules/auth/auth.module";
+import {AppRoutingModule} from './app-routing.module';
+import {AppComponent} from './app.component';
 import {HttpClientModule} from "@angular/common/http";
 import {NgToastModule} from "ng-angular-popup";
+import {CoreModule} from "./core/core.module";
+import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 
 @NgModule({
   declarations: [
     AppComponent
   ],
   imports: [
-    HttpClientModule,
     BrowserModule,
     AppRoutingModule,
-    AuthModule,
-    NgToastModule
+    CoreModule,
+    BrowserAnimationsModule,
+    NgToastModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+}

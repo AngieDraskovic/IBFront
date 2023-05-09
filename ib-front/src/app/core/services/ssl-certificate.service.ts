@@ -2,10 +2,11 @@ import {Injectable} from '@angular/core';
 import {environment} from "../../../environments/environment";
 import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
 import {catchError, map, Observable} from "rxjs";
-import {SslCertificate} from "../interfaces/ssl-certificate";
-import {handleSharedError} from "../utilities/shared-error-handler";
-import {CertificateStatus} from "../enums/certificate-status.enum";
-import {CertificateType} from "../enums/certificate-type.enum";
+import {SslCertificate} from "../../shared/interfaces/ssl-certificate";
+import {handleSharedError} from "../../shared/utilities/shared-error-handler.util";
+import {CertificateStatus} from "../../shared/enums/certificate-status.enum";
+import {CertificateType} from "../../shared/enums/certificate-type.enum";
+import {User} from "../interfaces/user";
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +17,19 @@ export class SslCertificateService {
   constructor(private http: HttpClient) {
   }
 
-  getCertificates(): Observable<SslCertificate[]> {
+  getBySerialNumber(serialNumber: string): Observable<SslCertificate> {
+    return this.http.get<SslCertificate>(`${this.apiUrl}/${serialNumber}`)
+      .pipe(
+        map((certificate: SslCertificate) => ({
+          ...certificate,
+          type: this.mapCertificateType(certificate.type),
+          status: this.mapCertificateStatus(certificate.status),
+        })),
+        catchError(handleSharedError)
+      );
+  }
+
+  getAllCertificates(): Observable<SslCertificate[]> {
     return this.http.get<SslCertificate[]>(this.apiUrl)
       .pipe(
         map((certificates: any[]) =>
@@ -28,6 +41,38 @@ export class SslCertificateService {
         ),
         catchError(handleSharedError)
       );
+  }
+
+  getCertificatesForUser(): Observable<SslCertificate[]> {
+    return this.http.get<SslCertificate[]>(`${this.apiUrl}/owner`)
+      .pipe(
+        map((certificates: any[]) =>
+          certificates.map(certificate => ({
+            ...certificate,
+            type: this.mapCertificateType(certificate.type),
+            status: this.mapCertificateStatus(certificate.status),
+          }))
+        ),
+        catchError(handleSharedError)
+      );
+  }
+
+  getCertificatesIssuedByUser(): Observable<SslCertificate[]> {
+    return this.http.get<SslCertificate[]>(`${this.apiUrl}/issued`)
+      .pipe(
+        map((certificates: any[]) =>
+          certificates.map(certificate => ({
+            ...certificate,
+            type: this.mapCertificateType(certificate.type),
+            status: this.mapCertificateStatus(certificate.status),
+          }))
+        ),
+        catchError(handleSharedError)
+      );
+  }
+
+  revokeCertificate(serialNumber: string): Observable<void> {
+    return this.http.put<void>(`${this.apiUrl}/${serialNumber}/revoke`, {});
   }
 
   validateCertificateSerialNumber(serialNumber: string) {
@@ -52,7 +97,6 @@ export class SslCertificateService {
       .pipe(
         catchError(handleSharedError)
       );
-    ;
   }
 
   downloadCertificate(certificateSN: string): Observable<Blob> {
@@ -73,8 +117,8 @@ export class SslCertificateService {
     }
   }
 
-  private mapCertificateStatus(dtoStatus: string): CertificateStatus {
-    switch (dtoStatus) {
+  private mapCertificateStatus(status: string): CertificateStatus {
+    switch (status) {
       case 'VALID':
         return CertificateStatus.VALID;
       case 'PENDING':
@@ -84,7 +128,7 @@ export class SslCertificateService {
       case 'REVOKED':
         return CertificateStatus.REVOKED;
       default:
-        throw new Error(`Unknown certificate status: ${dtoStatus}`);
+        throw new Error(`Unknown certificate status: ${status}`);
     }
   }
 }

@@ -5,7 +5,7 @@ import {HttpClient, HttpParams} from "@angular/common/http";
 import {Credentials} from "../interfaces/credentials";
 import {AuthToken} from "../interfaces/auth-token";
 import {environment} from "../../../environments/environment";
-import {handleSharedError} from "../../shared/utilities/shared-error-handler";
+import {handleSharedError} from "../../shared/utilities/shared-error-handler.util";
 import {RegistrationData} from "../interfaces/registration-data";
 import jwt_decode from "jwt-decode";
 import {Role} from "../enums/role";

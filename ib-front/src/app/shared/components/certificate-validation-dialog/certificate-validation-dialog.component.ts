@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {SslCertificateService} from "../../services/ssl-certificate.service";
+import {SslCertificateService} from "../../../core/services/ssl-certificate.service";
 import {CustomError} from "../../interfaces/custom-error";
 
 @Component({

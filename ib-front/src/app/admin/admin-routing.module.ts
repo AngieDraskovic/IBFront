@@ -2,6 +2,8 @@ import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {AdminComponent} from "./components/admin.component";
 import {AuthGuard} from "../core/guards/auth.guard";
+import {SslCertificatesComponent} from "../shared/components/ssl-certificates/ssl-certificates.component";
+import {CertificateRequestsComponent} from "../shared/components/certificate-requests/certificate-requests.component";
 
 const routes: Routes = [
   {
@@ -10,7 +12,8 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     data: {roles: ['admin']},
     children: [
-      // Add more routes for admin components here
+      { path: 'ssl-certificates', component: SslCertificatesComponent },
+      { path: 'certificate-requests', component: CertificateRequestsComponent },
     ],
   },
 ];

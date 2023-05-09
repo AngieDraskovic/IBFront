@@ -107,6 +107,7 @@
 }
 
 #sidebar .side-menu li a.logout {
+  cursor: pointer;
   color: var(--red);
 }
 

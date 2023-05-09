@@ -93,8 +93,8 @@ main .box-info li:nth-child(1) .fa {
 }
 
 main .box-info li:nth-child(2) .fa {
-  background: var(--light-yellow);
-  color: var(--yellow);
+  background: var(--lightGreen);
+  color: var(--green);
 }
 
 main .box-info li:nth-child(3) .fa {
@@ -201,8 +201,8 @@ main .table-data .order table tr td .status {
   font-weight: 700;
 }
 
-main .table-data .order table tr td .status.valid {
-  background: var(--blue);
+main .table-data .order table tr td .status.approved {
+  background: var(--green);
 }
 
 main .table-data .order table tr td .status.pending {
@@ -213,7 +213,7 @@ main .table-data .order table tr td .status.expired {
   background: var(--orange);
 }
 
-main .table-data .order table tr td .status.revoked {
+main .table-data .order table tr td .status.rejected {
   background: var(--red);
 }
 
@@ -227,14 +227,14 @@ main .table-data .order table tr td .type {
   background: var(--dark-grey);
 }
 
-.download-button {
+.approve-button {
   color: var(--green);
   cursor: pointer;
   transform: scale(1.5);
   padding: 0.25em;
 }
 
-.revoke-button {
+.reject-button {
   color: var(--red);
   cursor: pointer;
   transform: scale(1.5);

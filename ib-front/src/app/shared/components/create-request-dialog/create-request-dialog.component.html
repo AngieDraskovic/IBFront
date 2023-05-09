@@ -1,0 +1,52 @@
+<div class="form-wrapper">
+  <div class="contact-heading">
+    <h3>Create request</h3>
+  </div>
+
+  <form action="index.html" class="contact-form">
+    <div class="input-wrap">
+      <div class="dropdown">
+        <div class="select" [class.select-clicked]="menuOpen" (click)="toggleMenu()">
+          <span class="selected">{{ getCertificateTypeLabel(selectedOption) }} certificate type</span>
+          <div class="caret" [class.caret-rotate]="menuOpen"></div>
+        </div>
+
+        <ul class="menu" [class.menu-open]="menuOpen">
+          <li *ngFor="let option of options" [class.active]="option === selectedOption" (click)="selectOption(option)">
+            {{ getCertificateTypeLabel(option) }}
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="input-wrap">
+      <input #validTo class="contact-input" autocomplete="off" name="validTo" type="text" required
+             (focus)="onFocus(validTo)" (blur)="onBlur(validTo)" [(ngModel)]="validToValue"
+      >
+      <label>Valid To [dd-mm-yyyy]</label>
+      <i class="icon fa-solid fa-calendar-days"></i>
+    </div>
+
+    <div class="input-wrap w-100" [class.hidden]="selectedOption == CertificateType.ROOT">
+      <input #issuerSN class="contact-input" autocomplete="off" name="issuerSN" type="text" required
+             (focus)="onFocus(issuerSN)" (blur)="onBlur(issuerSN)" [(ngModel)]="issuerSNValue"
+      >
+      <label>Issuer SN</label>
+      <i class="icon fa-solid fa-id-card"></i>
+    </div>
+
+    <div class="input-wrap error-text" [class.hidden]="!hasErrors">
+      <p>{{error}}</p>
+    </div>
+
+    <div class="contact-buttons w-100">
+      <button class="btn upload" (click)="cancel()">
+              <span>
+                <i class="fa-solid fa-circle-xmark"></i>
+                Cancel
+              </span>
+      </button>
+      <input type="submit" value="Create" class="btn" (click)="createRequest()">
+    </div>
+  </form>
+</div>

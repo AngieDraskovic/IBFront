@@ -2,6 +2,7 @@ import {Component, EventEmitter, HostListener, OnInit, Output} from '@angular/co
 import {NavItem} from "../../interfaces/nav-item";
 import {LinkService} from "../../../core/services/link.service";
 import {AuthService} from "../../../core/services/auth.service";
+import {Router} from "@angular/router";
 
 interface SideNavToggle {
   screenWidth: number;
@@ -20,7 +21,7 @@ export class NavigationComponent implements OnInit {
 
   navItems: NavItem[] = [];
 
-  constructor(private authService: AuthService, private linkService: LinkService) {
+  constructor(private authService: AuthService, private router: Router, private linkService: LinkService) {
   }
 
   ngOnInit(): void {
@@ -43,5 +44,6 @@ export class NavigationComponent implements OnInit {
 
   logOut() {
     this.authService.logout();
+    this.router.navigate(['/login-register']);
   }
 }

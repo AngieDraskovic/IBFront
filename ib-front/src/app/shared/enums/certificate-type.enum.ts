@@ -1,5 +1,5 @@
 export enum CertificateType {
-  ROOT = 'Root',
-  INTERMEDIATE = 'Intermediate',
-  END = 'End',
+  ROOT = 'ROOT',
+  INTERMEDIATE = 'INTERMEDIATE',
+  END = 'END',
 }

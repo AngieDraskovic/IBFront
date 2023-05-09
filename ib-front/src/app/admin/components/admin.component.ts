@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import {Component, ViewChild} from '@angular/core';
+import {NavigationComponent} from "../../shared/components/navigation/navigation.component";
 
 @Component({
   selector: 'app-admin',
@@ -6,5 +7,18 @@ import { Component } from '@angular/core';
   styleUrls: ['./admin.component.css']
 })
 export class AdminComponent {
+  @ViewChild(NavigationComponent) navigationComponent!: NavigationComponent;
 
+  contentExpanded :boolean = false;
+
+  constructor() {}
+
+  toggleMenu() {
+    this.navigationComponent.toggleMenu();
+    this.contentExpanded = !this.contentExpanded;
+  }
+
+  onToggleSideNav($event: any) {
+    this.contentExpanded = true;
+  }
 }

@@ -1,12 +1,15 @@
 import {Component, OnInit} from '@angular/core';
 import {SslCertificate} from "../../interfaces/ssl-certificate";
-import {SslCertificateService} from "../../services/ssl-certificate.service";
+import {SslCertificateService} from "../../../core/services/ssl-certificate.service";
 import {CustomError} from "../../interfaces/custom-error";
 import {CertificateStatus} from "../../enums/certificate-status.enum";
 import {MatDialog} from "@angular/material/dialog";
 import {
   CertificateValidationDialogComponent
 } from "../certificate-validation-dialog/certificate-validation-dialog.component";
+import {AuthService} from "../../../core/services/auth.service";
+import {NgToastService} from "ng-angular-popup";
+import {RevokeCertificateDialogComponent} from "../revoke-certificate-dialog/revoke-certificate-dialog.component";
 
 @Component({
   selector: 'app-ssl-certificates',
@@ -14,12 +17,17 @@ import {
   styleUrls: ['./ssl-certificates.component.css']
 })
 export class SslCertificatesComponent implements OnInit {
-  certificates?: SslCertificate[];
+  protected readonly CertificateStatus = CertificateStatus;
+
+  certificatesOwned?: SslCertificate[];
+  certificatesIssued?: SslCertificate[];
+
   numberOfCertificates: number = 0;
   numberOfPendingCertificates: number = 0;
   numberOfRevokedCertificates: number = 0;
 
-  constructor(private sslCertificateService: SslCertificateService, private dialog: MatDialog) {
+  constructor(private authService: AuthService, private certificateService: SslCertificateService,
+              private dialog: MatDialog, private toastService: NgToastService) {
   }
 
   ngOnInit(): void {
@@ -27,10 +35,26 @@ export class SslCertificatesComponent implements OnInit {
   }
 
   fetchCertificates() {
-    this.sslCertificateService.getCertificates().subscribe({
+    this.fetchOwnedCertificates();
+    this.fetchIssuedCertificates();
+  }
+
+  fetchOwnedCertificates() {
+    this.certificateService.getCertificatesForUser().subscribe({
       next: (certificates) => {
-        this.certificates = certificates;
-        this.numberOfCertificates = this.certificates.length;
+        this.certificatesOwned = certificates;
+      },
+      error: (error: CustomError) => {
+        console.error('Error fetching certificates', error);
+      }
+    })
+  }
+
+  fetchIssuedCertificates() {
+    this.certificateService.getCertificatesIssuedByUser().subscribe({
+      next: (certificates) => {
+        this.certificatesIssued = certificates;
+        this.numberOfCertificates = this.certificatesIssued.length;
         this.numberOfPendingCertificates = this.getNumberOfPendingCertificates();
         this.numberOfRevokedCertificates = this.getNumberOfRevokedCertificates();
       },
@@ -41,19 +65,19 @@ export class SslCertificatesComponent implements OnInit {
   }
 
   getNumberOfPendingCertificates(): number {
-    if (!this.certificates) {
+    if (!this.certificatesIssued) {
       return 0;
     }
 
-    return this.certificates.filter(certificate => certificate.status === CertificateStatus.PENDING).length;
+    return this.certificatesIssued.filter(certificate => certificate.status === CertificateStatus.PENDING).length;
   }
 
   getNumberOfRevokedCertificates(): number {
-    if (!this.certificates) {
+    if (!this.certificatesIssued) {
       return 0;
     }
 
-    return this.certificates.filter(certificate => certificate.status === CertificateStatus.REVOKED).length;
+    return this.certificatesIssued.filter(certificate => certificate.status === CertificateStatus.REVOKED).length;
   }
 
   openCertificateValidationDialog(): void {
@@ -65,7 +89,7 @@ export class SslCertificatesComponent implements OnInit {
   }
 
   downloadCertificate(certificateSN: string): void {
-    this.sslCertificateService.downloadCertificate(certificateSN).subscribe({
+    this.certificateService.downloadCertificate(certificateSN).subscribe({
         next: (data) => {
           const blob = new Blob([data], {type: 'application/x-pem-file'});
           const url = window.URL.createObjectURL(blob);
@@ -84,7 +108,28 @@ export class SslCertificatesComponent implements OnInit {
     );
   }
 
-  pageChanged($event: any) {
-
+  revokeCertificate(serialNumber: string) {
+    const dialogRef = this.dialog.open(RevokeCertificateDialogComponent, {});
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.certificateService.revokeCertificate(serialNumber).subscribe({
+          next: (data) => {
+            this.fetchCertificates();
+            this.toastService.success({
+              detail: "Certificate revoked",
+              summary: "Certificate revoked successfully.",
+              duration: 5000
+            });
+          },
+          error: (error) => {
+            this.toastService.error({
+              detail: "Error",
+              summary: "An error occurred.",
+              duration: 5000
+            });
+          }
+        });
+      }
+    });
   }
 }

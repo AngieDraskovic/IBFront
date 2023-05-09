@@ -23,7 +23,7 @@ export class LinkService {
     } else {
       return [
         { routeLink: '/user/ssl-certificates', label: 'Certificates', icon: 'fa fa-solid fa-certificate' },
-        { routeLink: '/user/users', label: 'Users', icon: 'fa fa-solid fa-certificate' }
+        { routeLink: '/user/certificate-requests', label: 'Requests', icon: 'fa fa-solid fa-question-circle' }
       ];
     }
   }

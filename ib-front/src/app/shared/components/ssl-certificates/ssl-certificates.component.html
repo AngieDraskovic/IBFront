@@ -1,10 +1,10 @@
 <main>
   <div class="head-title">
     <div class="left">
-      <h1>Dashboard</h1>
+      <h1>Certificates</h1>
       <ul class="breadcrumb">
         <li>
-          <a href="#">Dashboard</a>
+          <a href="#">Certificates</a>
         </li>
         <li><i class='fa fa-regular fa-chevron-right'></i></li>
         <li>
@@ -49,7 +49,7 @@
   <div class="table-data">
     <div class="order">
       <div class="head">
-        <h3>Certificates</h3>
+        <h3>Issued certificates</h3>
         <i class='bx bx-search'></i>
         <i class='bx bx-filter'></i>
       </div>
@@ -65,7 +65,7 @@
         </tr>
         </thead>
         <tbody>
-        <tr *ngFor="let certificate of certificates">
+        <tr *ngFor="let certificate of certificatesIssued">
           <td>
             <img ngSrc="assets/images/profile.png" width="60" height="40" alt="">
             <p>{{ certificate.userEmail }}</p>
@@ -77,6 +77,46 @@
           <td>
             <i class='download-button fa-regular fa-file-arrow-down'
                (click)="downloadCertificate(certificate.serialNumber)"></i>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="table-data">
+    <div class="order">
+      <div class="head">
+        <h3>My certificates</h3>
+        <i class='bx bx-search'></i>
+        <i class='bx bx-filter'></i>
+      </div>
+      <table>
+        <thead>
+        <tr>
+          <th>Serial Number</th>
+          <th>Type</th>
+          <th>Valid From</th>
+          <th>Valid To</th>
+          <th>Status</th>
+          <th class="button"></th>
+          <th class="button"></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let certificate of certificatesOwned">
+          <td><span>{{certificate.serialNumber}}</span></td>
+          <td><span class="type">{{certificate.type}}</span></td>
+          <td>{{ certificate.validFrom | date:'dd-MM-yyyy' }}</td>
+          <td>{{ certificate.validTo | date:'dd-MM-yyyy' }}</td>
+          <td><span class="status {{ certificate.status.toLowerCase() }}">{{ certificate.status }}</span></td>
+          <td>
+            <i class='download-button fa-regular fa-file-arrow-down'
+               (click)="downloadCertificate(certificate.serialNumber)"></i>
+          </td>
+          <td *ngIf="certificate.status == CertificateStatus.VALID">
+            <i class='revoke-button fa-solid fa-circle-xmark'
+               (click)="revokeCertificate(certificate.serialNumber)"></i>
           </td>
         </tr>
         </tbody>

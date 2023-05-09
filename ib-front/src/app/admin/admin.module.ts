@@ -1,5 +1,5 @@
 import {NgModule} from '@angular/core';
-import {CommonModule} from '@angular/common';
+import {CommonModule, NgOptimizedImage} from '@angular/common';
 import { AdminComponent } from './components/admin.component';
 import {SharedModule} from "../shared/shared.module";
 import {AdminRoutingModule} from "./admin-routing.module";
@@ -9,11 +9,12 @@ import {AdminRoutingModule} from "./admin-routing.module";
   declarations: [
     AdminComponent
   ],
-  imports: [
-    CommonModule,
-    AdminRoutingModule,
-    SharedModule
-  ]
+    imports: [
+        CommonModule,
+        AdminRoutingModule,
+        SharedModule,
+        NgOptimizedImage
+    ]
 })
 export class AdminModule {
 }

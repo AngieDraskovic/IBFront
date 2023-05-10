@@ -8,6 +8,11 @@ import {CertificateRequestsComponent} from "../shared/components/certificate-req
 const routes: Routes = [
   {
     path: '',
+    redirectTo: '/admin/ssl-certificates',
+    pathMatch: 'full'
+  },
+  {
+    path: '',
     component: AdminComponent,
     canActivate: [AuthGuard],
     data: {roles: ['admin']},

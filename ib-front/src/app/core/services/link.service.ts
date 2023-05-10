@@ -18,8 +18,8 @@ export class LinkService {
 
     if (user.role === Role.Admin) {
       return [
-        { routeLink: 'admin/dashboard', label: 'Certificates', icon: 'fa fa-duotone fa-lock' },
-        { routeLink: 'admin/certificate-requests', label: 'Requests', icon: 'fa fa-duotone fa-lock' }
+        { routeLink: '/admin/ssl-certificates', label: 'Certificates', icon: 'fa fa-duotone fa-lock' },
+        { routeLink: '/admin/certificate-requests', label: 'Requests', icon: 'fa fa-duotone fa-lock' }
       ];
     } else {
       return [

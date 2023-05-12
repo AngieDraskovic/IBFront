@@ -18,13 +18,13 @@ export class LinkService {
 
     if (user.role === Role.Admin) {
       return [
-        { routeLink: '/admin/ssl-certificates', label: 'Certificates', icon: 'fa fa-duotone fa-lock' },
-        { routeLink: '/admin/certificate-requests', label: 'Requests', icon: 'fa fa-duotone fa-lock' }
+        { routeLink: '/admin/ssl-certificates', label: 'Certificates', icon: 'fa fa-solid fa-certificate' },
+        { routeLink: '/admin/certificate-requests', label: 'Requests', icon: 'fa fa-solid fa-inbox' }
       ];
     } else {
       return [
         { routeLink: '/user/ssl-certificates', label: 'Certificates', icon: 'fa fa-solid fa-certificate' },
-        { routeLink: '/user/certificate-requests', label: 'Requests', icon: 'fa fa-duotone fa-lock' }
+        { routeLink: '/user/certificate-requests', label: 'Requests', icon: 'fa fa-solid fa-inbox' }
       ];
     }
   }

@@ -2,25 +2,26 @@ import {Injectable} from '@angular/core';
 import {environment} from "../../../environments/environment";
 import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
 import {catchError, map, Observable} from "rxjs";
-import {SslCertificate} from "../../shared/interfaces/ssl-certificate";
+import {Certificate} from "../../shared/interfaces/certificate";
 import {handleSharedError} from "../../shared/utilities/shared-error-handler.util";
 import {CertificateStatus} from "../../shared/enums/certificate-status.enum";
 import {CertificateType} from "../../shared/enums/certificate-type.enum";
 import {User} from "../interfaces/user";
+import {PaginatedResponse} from "../../shared/interfaces/paginated-response";
 
 @Injectable({
   providedIn: 'root'
 })
-export class SslCertificateService {
+export class CertificateService {
   private readonly apiUrl = `${environment.apiUrl}/certificate`;
 
   constructor(private http: HttpClient) {
   }
 
-  getBySerialNumber(serialNumber: string): Observable<SslCertificate> {
-    return this.http.get<SslCertificate>(`${this.apiUrl}/${serialNumber}`)
+  getBySerialNumber(serialNumber: string): Observable<Certificate> {
+    return this.http.get<Certificate>(`${this.apiUrl}/${serialNumber}`)
       .pipe(
-        map((certificate: SslCertificate) => ({
+        map((certificate: Certificate) => ({
           ...certificate,
           type: this.mapCertificateType(certificate.type),
           status: this.mapCertificateStatus(certificate.status),
@@ -29,8 +30,8 @@ export class SslCertificateService {
       );
   }
 
-  getAllCertificates(): Observable<SslCertificate[]> {
-    return this.http.get<SslCertificate[]>(this.apiUrl)
+  getAll(): Observable<Certificate[]> {
+    return this.http.get<Certificate[]>(this.apiUrl)
       .pipe(
         map((certificates: any[]) =>
           certificates.map(certificate => ({
@@ -43,32 +44,52 @@ export class SslCertificateService {
       );
   }
 
-  getCertificatesForUser(): Observable<SslCertificate[]> {
-    return this.http.get<SslCertificate[]>(`${this.apiUrl}/owner`)
+  getAllPaged(page: number, size: number): Observable<PaginatedResponse<Certificate>> {
+    const params = {
+      page: page.toString(),
+      size: size.toString()
+    };
+
+    return this.http.get<PaginatedResponse<Certificate>>(`${this.apiUrl}/paginated`, {params})
       .pipe(
-        map((certificates: any[]) =>
-          certificates.map(certificate => ({
+        map(response => ({
+          ...response,
+          content: response.content.map((certificate: any) => ({
             ...certificate,
             type: this.mapCertificateType(certificate.type),
             status: this.mapCertificateStatus(certificate.status),
-          }))
-        ),
+          })),
+        })),
         catchError(handleSharedError)
       );
   }
 
-  getCertificatesIssuedByUser(): Observable<SslCertificate[]> {
-    return this.http.get<SslCertificate[]>(`${this.apiUrl}/issued`)
+  getCertificatesForUser(page: number, size: number): Observable<PaginatedResponse<Certificate>> {
+    const params = {
+      page: page.toString(),
+      size: size.toString()
+    };
+
+    return this.http.get<PaginatedResponse<Certificate>>(`${this.apiUrl}/owner`, {params})
       .pipe(
-        map((certificates: any[]) =>
-          certificates.map(certificate => ({
+        map(response => ({
+          ...response,
+          content: response.content.map((certificate: any) => ({
             ...certificate,
             type: this.mapCertificateType(certificate.type),
             status: this.mapCertificateStatus(certificate.status),
-          }))
-        ),
+          })),
+        })),
         catchError(handleSharedError)
       );
+  }
+
+  countAllCertificates(): Observable<number> {
+    return this.http.get<number>(`${this.apiUrl}/count/all`);
+  }
+
+  countCertificatesByStatus(status: string): Observable<number> {
+    return this.http.get<number>(`${this.apiUrl}/count/status`, {params: {status}});
   }
 
   revokeCertificate(serialNumber: string): Observable<void> {
@@ -100,7 +121,12 @@ export class SslCertificateService {
   }
 
   downloadCertificate(certificateSN: string): Observable<Blob> {
-    const url = `${this.apiUrl}/${certificateSN}/download`;
+    const url = `${this.apiUrl}/${certificateSN}/download-certificate`;
+    return this.http.get(url, {responseType: 'blob'});
+  }
+
+  downloadPrivateKey(certificateSN: string): Observable<Blob> {
+    const url = `${this.apiUrl}/${certificateSN}/download-private-key`;
     return this.http.get(url, {responseType: 'blob'});
   }
 

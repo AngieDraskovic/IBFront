@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SslCertificatesComponent } from './ssl-certificates.component';
+import { CertificatesComponent } from './certificates.component';
 
 describe('SslCertificatesComponent', () => {
-  let component: SslCertificatesComponent;
-  let fixture: ComponentFixture<SslCertificatesComponent>;
+  let component: CertificatesComponent;
+  let fixture: ComponentFixture<CertificatesComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SslCertificatesComponent ]
+      declarations: [ CertificatesComponent ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(SslCertificatesComponent);
+    fixture = TestBed.createComponent(CertificatesComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -7,7 +7,7 @@ import {CertificateRequestStatus} from "../../shared/enums/certificate-request-s
 import {handleSharedError} from "../../shared/utilities/shared-error-handler.util";
 import {CreateCertificateRequestDTO} from "../../shared/interfaces/create-certificate-request-dto";
 import {format} from "date-fns";
-import {SslCertificateService} from "./ssl-certificate.service";
+import {CertificateService} from "./certificate.service";
 import {OutgoingCertificateRequest} from "../../shared/interfaces/outgoing-certificate-request";
 import {RejectionReason} from "../../shared/interfaces/rejection-reason";
 
@@ -17,7 +17,7 @@ import {RejectionReason} from "../../shared/interfaces/rejection-reason";
 export class CertificateRequestService {
   private readonly apiUrl = `${environment.apiUrl}/certificate/request`;
 
-  constructor(private http: HttpClient, private certificateService: SslCertificateService) {
+  constructor(private http: HttpClient, private certificateService: CertificateService) {
   }
 
   getAllCertificateRequests(): Observable<CertificateRequest[]> {

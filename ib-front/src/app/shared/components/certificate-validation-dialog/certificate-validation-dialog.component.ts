@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {SslCertificateService} from "../../../core/services/ssl-certificate.service";
+import {CertificateService} from "../../../core/services/certificate.service";
 import {CustomError} from "../../interfaces/custom-error";
 
 @Component({
@@ -12,7 +12,7 @@ export class CertificateValidationDialogComponent {
   slideInLeftFirst: boolean = false;
   slideInLeftSecond: boolean = false;
 
-  constructor(private certificateService: SslCertificateService) {
+  constructor(private certificateService: CertificateService) {
   }
 
   reset(): void {

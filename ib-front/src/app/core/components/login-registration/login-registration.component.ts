@@ -1,12 +1,12 @@
 import {Component} from '@angular/core';
 import {AbstractControl, FormControl, FormGroup, ValidatorFn, Validators} from "@angular/forms";
 import {NgToastService} from "ng-angular-popup";
-import {Credentials} from "../../interfaces/credentials";
-import {CustomError} from "../../../shared/interfaces/custom-error";
-import {RegistrationData} from "../../interfaces/registration-data";
+import {Credentials} from "../../models/credentials";
+import {CustomError} from "../../models/custom-error";
+import {RegistrationData} from "../../models/registration-data";
 import {AuthService} from "../../services/auth.service";
 import {Router} from "@angular/router";
-import {Role} from "../../enums/role";
+import {UserRoleEnum} from "../../enums/user-role.enum";
 
 @Component({
   selector: 'app-login-registration',
@@ -50,9 +50,9 @@ export class LoginRegistrationComponent {
     this.authService.login(credentials).subscribe({
       next: () => {
         const user = this.authService.currentUserValue;
-        if (user?.role === Role.Admin) {
+        if (user?.role === UserRoleEnum.Admin) {
           this.router.navigate(['/admin']);
-        } else if (user?.role === Role.User) {
+        } else if (user?.role === UserRoleEnum.User) {
           this.router.navigate(['/user']);
         }
       },

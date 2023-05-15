@@ -1,5 +1,5 @@
 import {Component, ViewChild} from '@angular/core';
-import {NavigationComponent} from "../../shared/components/navigation/navigation.component";
+import {NavigationComponent} from "../../core/components/navigation/navigation.component";
 
 @Component({
   selector: 'app-user',

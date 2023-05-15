@@ -1,6 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { throwError, Observable } from 'rxjs';
-import {CustomError} from "../interfaces/custom-error";
+import {CustomError} from "../../core/models/custom-error";
 
 export function handleSharedError(error: HttpErrorResponse): Observable<never> {
   let customError: CustomError = {

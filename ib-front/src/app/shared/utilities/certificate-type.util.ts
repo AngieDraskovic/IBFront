@@ -1,4 +1,4 @@
-import {CertificateType} from "../enums/certificate-type.enum";
+import {CertificateType} from "../../features/certificates/enums/certificate-type.enum";
 
 export function getCertificateTypeLabel(certificateType: CertificateType | undefined): string {
   switch (certificateType) {

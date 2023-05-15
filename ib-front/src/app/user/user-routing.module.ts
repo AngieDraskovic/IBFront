@@ -3,8 +3,8 @@ import {RouterModule, Routes} from '@angular/router';
 import {UserComponent} from "./components/user.component";
 import {AuthGuard} from "../core/guards/auth.guard";
 import {LoginRegistrationComponent} from "../core/components/login-registration/login-registration.component";
-import {CertificatesComponent} from "../shared/components/certificates/certificates.component";
-import {CertificateRequestsComponent} from "../shared/components/certificate-requests/certificate-requests.component";
+import {CertificatesComponent} from "../features/certificates/components/certificates/certificates.component";
+import {CertificateRequestsComponent} from "../features/certificate-requests/components/certificate-requests/certificate-requests.component";
 
 const routes: Routes = [
   {

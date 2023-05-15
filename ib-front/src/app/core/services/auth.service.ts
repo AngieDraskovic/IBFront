@@ -1,14 +1,14 @@
 import {Injectable} from '@angular/core';
 import {BehaviorSubject, catchError, map, Observable} from "rxjs";
-import {User} from "../interfaces/user";
+import {User} from "../models/user";
 import {HttpClient, HttpParams} from "@angular/common/http";
-import {Credentials} from "../interfaces/credentials";
-import {AuthToken} from "../interfaces/auth-token";
+import {Credentials} from "../models/credentials";
+import {AuthToken} from "../models/auth-token";
 import {environment} from "../../../environments/environment";
 import {handleSharedError} from "../../shared/utilities/shared-error-handler.util";
-import {RegistrationData} from "../interfaces/registration-data";
+import {RegistrationData} from "../models/registration-data";
 import jwt_decode from "jwt-decode";
-import {Role} from "../enums/role";
+import {UserRoleEnum} from "../enums/user-role.enum";
 
 @Injectable({
   providedIn: 'root'
@@ -77,14 +77,14 @@ export class AuthService {
     }
   }
 
-  private mapRole(roleString: string): Role {
+  private mapRole(roleString: string): UserRoleEnum {
     switch (roleString) {
       case 'ROLE_ADMIN':
-        return Role.Admin;
+        return UserRoleEnum.Admin;
       case 'ROLE_USER':
-        return Role.User;
+        return UserRoleEnum.User;
       default:
-        return Role.Guest;
+        return UserRoleEnum.Guest;
     }
   }
 }

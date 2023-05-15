@@ -1,0 +1,51 @@
+<main>
+  <div class="head-title">
+    <div class="left">
+      <h1>Certificate requests</h1>
+      <ul class="breadcrumb">
+        <li>
+          <a href="#">Certificate requests</a>
+        </li>
+        <li><i class='fa fa-regular fa-chevron-right'></i></li>
+        <li>
+          <a class="active" href="#">Home</a>
+        </li>
+      </ul>
+    </div>
+    <a (click)="openCreateRequestDialog()" class="btn-download">
+      <i class='fa fa-solid fa-plus-circle'></i> &nbsp;
+      <span class="text">
+
+        Create Request
+      </span>
+    </a>
+  </div>
+
+  <ul class="box-info">
+    <li>
+      <i class='fa fa-solid fa-circle-question'></i>
+      <span class="text">
+						<h3>{{numberOfRequests}}</h3>
+						<p>Requests</p>
+					</span>
+    </li>
+    <li>
+      <i class='fa fa-solid fa-circle-check'></i>
+      <span class="text">
+						<h3>{{numberOfApprovedRequests}}</h3>
+						<p>Approved</p>
+					</span>
+    </li>
+    <li>
+      <i class='fa fa-solid fa-circle-xmark'></i>
+      <span class="text">
+						<h3>{{numberOfRejectedRequests}}</h3>
+						<p>Rejected</p>
+					</span>
+    </li>
+  </ul>
+
+  <app-outgoing-requests-table #outgoingCertificateRequests></app-outgoing-requests-table>
+
+  <app-incoming-certificate-requests-table #incomingCertificateRequests></app-incoming-certificate-requests-table>
+</main>

@@ -1,0 +1,145 @@
+.table-data {
+  display: flex;
+  flex-wrap: wrap;
+  grid-gap: 24px;
+  margin-top: 24px;
+  width: 100%;
+  color: var(--dark);
+}
+
+.table-data > div {
+  border-radius: 20px;
+  background: var(--light);
+  padding: 24px;
+  overflow-x: auto;
+}
+
+.table-data .head {
+  display: flex;
+  align-items: center;
+  grid-gap: 16px;
+  margin-bottom: 24px;
+}
+
+.table-data .head h3 {
+  margin-right: auto;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.table-data .head .fa {
+  cursor: pointer;
+}
+
+.table-data .order {
+  flex-grow: 1;
+  flex-basis: 500px;
+}
+
+.table-data .order table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table-data .order table th {
+  padding-bottom: 12px;
+  font-size: 13px;
+  text-align: left;
+  border-bottom: 1px solid var(--grey);
+}
+
+th {
+  width: 10%;
+}
+
+th.button {
+  width: 4%;
+}
+
+.table-data .order table td {
+  padding: 16px 0;
+}
+
+.table-data .order table tr td:first-child {
+  display: flex;
+  align-items: center;
+  grid-gap: 12px;
+  padding-left: 6px;
+}
+
+.table-data .order table td img {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.table-data .order table tbody tr:hover {
+  background: var(--grey);
+}
+
+.table-data .order table tr td .status {
+  font-size: 12px;
+  padding: 6px 16px;
+  color: var(--light);
+  border-radius: 20px;
+  font-weight: 700;
+}
+
+.table-data .order table tr td .status.approved {
+  background: var(--green);
+}
+
+.table-data .order table tr td .status.pending {
+  background: var(--yellow);
+}
+
+.table-data .order table tr td .status.expired {
+  background: var(--orange);
+}
+
+.table-data .order table tr td .status.rejected {
+  background: var(--red);
+}
+
+.table-data .order table tr td .type {
+  font-size: 12px;
+  padding: 6px 16px;
+  color: var(--light);
+  border-radius: 20px;
+  font-weight: 700;
+
+  background: var(--dark-grey);
+}
+
+.download-button {
+  color: var(--green);
+  cursor: pointer;
+  transform: scale(1.5);
+  padding: 0.25em;
+}
+
+.download-key {
+  color: var(--blue);
+  cursor: pointer;
+  transform: scale(1.5);
+  padding: 0.25em;
+}
+
+.revoke-button {
+  color: var(--red);
+  cursor: pointer;
+  transform: scale(1.5);
+  padding: 0.25em;
+}
+
+
+@media screen and (max-width: 576px) {
+  .table-data .head {
+    min-width: 420px;
+  }
+
+  main .table-data .order table {
+    min-width: 420px;
+  }
+}

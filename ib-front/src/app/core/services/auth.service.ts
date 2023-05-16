@@ -57,13 +57,24 @@ export class AuthService {
   }
 
   private getUserFromToken(token?: string): User | null {
-    token = token || JSON.parse(localStorage.getItem('user') || '{}').token;
+    try {
+      token = token || JSON.parse(localStorage.getItem('user') || '{}').token;
+    } catch (error) {
+      localStorage.removeItem('user');
+    }
+
     if (!token) {
       return null;
     }
 
     try {
       const decodedToken: any = jwt_decode(token);
+      const current_time = Date.now().valueOf() / 1000;
+      if (decodedToken.exp < current_time) {
+        localStorage.removeItem('user');
+        return null;
+      }
+
       const role = this.mapRole(decodedToken.role);
       return {
         id: decodedToken.jti,
@@ -72,9 +83,21 @@ export class AuthService {
         token,
       };
     } catch (error) {
-      console.error('Failed to decode token', error);
       return null;
     }
+  }
+
+  isTokenExpired(): boolean {
+    const currentUser = this.currentUserValue;
+    if (!currentUser || !currentUser.token) {
+      return true;
+    }
+
+    const decodedToken: any = jwt_decode(currentUser.token);
+    const expirationDate = decodedToken.exp;
+    const now = (new Date()).getTime() / 1000;
+
+    return expirationDate < now;
   }
 
   private mapRole(roleString: string): UserRoleEnum {

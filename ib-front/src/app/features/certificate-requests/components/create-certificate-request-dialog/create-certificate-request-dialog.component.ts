@@ -101,7 +101,7 @@ export class CreateCertificateRequestDialogComponent implements OnInit {
     if (this.authService.currentUserValue?.role == UserRoleEnum.Admin) {
       this.certificateRequestService.createAdminCertificateRequest(createCertificateRequestDTO).subscribe({
         next: () => {
-          this.dialogRef.close();
+          this.dialogRef.close(true);
         },
         error: (error: CustomError) => {
           this.hasErrors = true;

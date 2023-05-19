@@ -78,11 +78,6 @@ export class AuthService {
     }
   }
 
-
-  verifyRecaptcha(token:string): Observable<void> {
-    return this.http.post<void>(`${environment.apiUrl}/recaptcha/verify`, token);
-  }
-
   private mapRole(roleString: string): UserRoleEnum {
     switch (roleString) {
       case 'ROLE_ADMIN':

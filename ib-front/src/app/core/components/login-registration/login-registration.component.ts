@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {AfterViewInit, Component} from '@angular/core';
 import {AbstractControl, FormControl, FormGroup, ValidatorFn, Validators} from "@angular/forms";
 import {NgToastService} from "ng-angular-popup";
 import {Credentials} from "../../models/credentials";
@@ -7,6 +7,9 @@ import {RegistrationData} from "../../models/registration-data";
 import {AuthService} from "../../services/auth.service";
 import {Router} from "@angular/router";
 import {UserRoleEnum} from "../../enums/user-role.enum";
+import { HttpClient } from '@angular/common/http';
+
+
 
 @Component({
   selector: 'app-login-registration',
@@ -14,6 +17,8 @@ import {UserRoleEnum} from "../../enums/user-role.enum";
   styleUrls: ['./login-registration.component.css']
 })
 export class LoginRegistrationComponent {
+  siteKey = '6Le54BwmAAAAAO5Wppw-q7bP4I1rKwZoZ1c_fWyV';
+  recaptchaToken:string = '';
   signupMode = false;
 
   allTextPattern = "[a-zA-Z][a-zA-Z]*";
@@ -21,7 +26,8 @@ export class LoginRegistrationComponent {
 
   loginForm = new FormGroup({
     email: new FormControl('', [Validators.email, Validators.required]),
-    password: new FormControl('', [Validators.required])
+    password: new FormControl('', [Validators.required]),
+    recaptcha: new FormControl('', [Validators.required])
   });
 
   signupForm = new FormGroup({
@@ -34,9 +40,16 @@ export class LoginRegistrationComponent {
     confirmPassword: new FormControl('', [Validators.required])
   }, {validators: [match('password', 'confirmPassword')]});
 
-  constructor(private authService: AuthService, private toastService: NgToastService, private router: Router) {
+  constructor(private authService: AuthService, private toastService: NgToastService,
+              private router: Router) {
   }
 
+  handleRecaptchaResponse(response: string) {
+    console.log(response); 
+    this.recaptchaToken = response;
+  }
+
+  
   login() {
     if (this.loginForm.invalid) {
       return;
@@ -44,8 +57,11 @@ export class LoginRegistrationComponent {
 
     const credentials: Credentials = {
       email: this.loginForm.controls['email'].value ?? '',
-      password: this.loginForm.controls['password'].value ?? ''
+      password: this.loginForm.controls['password'].value ?? '',
+      recaptchaToken: this.recaptchaToken
     };
+    window.alert("cao");
+    console.log(credentials);
 
     this.authService.login(credentials).subscribe({
       next: () => {
@@ -88,7 +104,7 @@ export class LoginRegistrationComponent {
     };
 
     this.authService.register(registrationData, this.signupForm.controls['confirmationMethod'].value ?? '').subscribe({
-      next: (response) => {
+      next: () => {
         this.toastService.success({
           detail: "Registration successful",
           summary: "Please activate your account via email and proceed to log in.",

@@ -7,6 +7,8 @@ import {HttpClientModule} from "@angular/common/http";
 import {NgToastModule} from "ng-angular-popup";
 import {CoreModule} from "./core/core.module";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
+import { RecaptchaModule } from 'ng-recaptcha';
+
 
 @NgModule({
   declarations: [
@@ -18,6 +20,7 @@ import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
     CoreModule,
     BrowserAnimationsModule,
     NgToastModule,
+    RecaptchaModule,
     HttpClientModule
   ],
   providers: [],

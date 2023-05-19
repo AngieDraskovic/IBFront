@@ -16,6 +16,7 @@ import {UserRoleEnum} from "../enums/user-role.enum";
 export class AuthService {
   private currentUserSubject: BehaviorSubject<User | null>;
   public currentUser: Observable<User | null>;
+  private SITE_KEY:string = '6LfygxomAAAAAIgbUdHD0X37WnSXwb7LkWw3rGg2'
 
   constructor(private http: HttpClient) {
     this.currentUserSubject = new BehaviorSubject<User | null>(this.getUserFromToken());
@@ -27,7 +28,7 @@ export class AuthService {
   }
 
   login(auth: Credentials): Observable<string> {
-    return this.http.post<AuthToken>(`${environment.apiUrl}/user/login`, auth)
+    return this.http.post<AuthToken>(`${environment.apiUrl}/user/login2`, auth)
       .pipe(
         map((response) => {
           const token = response.accessToken;
@@ -77,6 +78,11 @@ export class AuthService {
     }
   }
 
+
+  verifyRecaptcha(token:string): Observable<void> {
+    return this.http.post<void>(`${environment.apiUrl}/recaptcha/verify`, token);
+  }
+
   private mapRole(roleString: string): UserRoleEnum {
     switch (roleString) {
       case 'ROLE_ADMIN':
@@ -87,4 +93,6 @@ export class AuthService {
         return UserRoleEnum.Guest;
     }
   }
+
+
 }

@@ -1,3 +1,4 @@
+<body>
 <div class="container" [class.sign-up-mode]="signupMode">
   <div class="forms-container">
     <div class="signin-signup">
@@ -20,12 +21,12 @@
             Please enter a valid email
           </span>
         </div>
-
         <div class="input-field">
           <i class="fas fa-lock"></i>
           <input type="password" formControlName="password" placeholder="Password"/>
         </div>
-
+        <re-captcha formControlName="recaptcha" siteKey="{{ siteKey }}" (resolved)="handleRecaptchaResponse($event)" reCaptchaValueAccessor></re-captcha>
+        <div class="g-recaptcha" data-sitekey="{{ siteKey }}"></div>
         <button [class.btn-disabled]="!loginForm.valid" type="submit" class="btn solid">Login</button>
 
         <p class="social-text">Or Sign in with social platforms</p>
@@ -190,3 +191,4 @@
     </div>
   </div>
 </div>
+</body>

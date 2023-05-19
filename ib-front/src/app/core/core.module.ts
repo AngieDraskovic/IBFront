@@ -8,6 +8,8 @@ import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {TokenInterceptor} from "./interceptors/token.interceptor";
 import { RecaptchaModule } from 'ng-recaptcha';
 import { ReCaptchaValueAccessorDirective } from 'src/app/shared/utilities/recaptcha-value-accessor';
+import {AuthInterceptor} from "./interceptors/auth.interceptor";
+
 
 @NgModule({
   declarations: [
@@ -26,7 +28,7 @@ import { ReCaptchaValueAccessorDirective } from 'src/app/shared/utilities/recapt
     AuthGuard,
     {
       provide: HTTP_INTERCEPTORS,
-      useClass: TokenInterceptor,
+      useClass: AuthInterceptor,
       multi: true,
     },
   ],

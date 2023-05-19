@@ -7,7 +7,7 @@ import {RegistrationData} from "../../models/registration-data";
 import {AuthService} from "../../services/auth.service";
 import {Router} from "@angular/router";
 import {UserRoleEnum} from "../../enums/user-role.enum";
-import { HttpClient } from '@angular/common/http';
+
 
 
 

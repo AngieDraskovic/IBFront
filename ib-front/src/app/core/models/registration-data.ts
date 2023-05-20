@@ -2,6 +2,7 @@ export interface RegistrationData {
   name: string;
   surname: string;
   email: string;
-  phoneNumber: string;
+  telephoneNumber: string;
   password: string;
+  recaptchaToken:string
 }

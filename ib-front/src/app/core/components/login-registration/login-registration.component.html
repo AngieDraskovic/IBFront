@@ -25,7 +25,7 @@
           <i class="fas fa-lock"></i>
           <input type="password" formControlName="password" placeholder="Password"/>
         </div>
-        <re-captcha formControlName="recaptcha" siteKey="{{ siteKey }}" (resolved)="handleRecaptchaResponse($event)" reCaptchaValueAccessor></re-captcha>
+        <re-captcha formControlName="recaptcha" siteKey="{{ siteKey }}" (resolved)="handleRecaptchaResponseLogin($event)" reCaptchaValueAccessor></re-captcha>
         <div class="g-recaptcha" data-sitekey="{{ siteKey }}"></div>
         <button [class.btn-disabled]="!loginForm.valid" type="submit" class="btn solid">Login</button>
 
@@ -50,7 +50,7 @@
         </div>
       </form>
 
-      <form [formGroup]="signupForm" (ngSubmit)="register()" class="sign-up-form">
+      <form *ngIf="!activating" [formGroup]="signupForm" (ngSubmit)="register()" class="sign-up-form">
         <h2 class="title">Sign up</h2>
 
         <div class="input-container">
@@ -91,20 +91,20 @@
 
         <div class="input-field"
              [class.input-field-error]="
-               signupForm.get('phoneNumber')?.invalid &&
-               signupForm.get('phoneNumber')?.touched &&
-               (signupForm.get('phoneNumber')?.errors?.['minlength'] ||
-                signupForm.get('phoneNumber')?.errors?.['maxlength'] ||
-                signupForm.get('phoneNumber')?.errors?.['pattern'])"
+               signupForm.get('telephoneNumber')?.invalid &&
+               signupForm.get('telephoneNumber')?.touched &&
+               (signupForm.get('telephoneNumber')?.errors?.['minlength'] ||
+                signupForm.get('telephoneNumber')?.errors?.['maxlength'] ||
+                signupForm.get('telephoneNumber')?.errors?.['pattern'])"
         >
           <i class="fas fa-phone"></i>
-          <input type="text" formControlName="phoneNumber" placeholder="Phone number"/>
+          <input type="text" formControlName="telephoneNumber" placeholder="Phone number"/>
           <span class="error-text"
-                *ngIf=" signupForm.get('phoneNumber')?.invalid &&
-                        signupForm.get('phoneNumber')?.touched &&
-                       (signupForm.get('phoneNumber')?.errors?.['minlength'] ||
-                        signupForm.get('phoneNumber')?.errors?.['maxlength'] ||
-                        signupForm.get('phoneNumber')?.errors?.['pattern'])"
+                *ngIf=" signupForm.get('telephoneNumber')?.invalid &&
+                        signupForm.get('telephoneNumber')?.touched &&
+                       (signupForm.get('telephoneNumber')?.errors?.['minlength'] ||
+                        signupForm.get('telephoneNumber')?.errors?.['maxlength'] ||
+                        signupForm.get('telephoneNumber')?.errors?.['pattern'])"
           >
               Wrong format
             </span>
@@ -157,11 +157,25 @@
             Passwords do not match
           </span>
         </div>
-
+        <re-captcha formControlName="recaptcha" siteKey="{{ siteKey }}" (resolved)="handleRecaptchaResponseReg($event)" reCaptchaValueAccessor></re-captcha>
         <button [class.btn-disabled]="!signupForm.valid" type="submit" class="btn solid">SIGN UP</button>
+      </form>
+
+      <form *ngIf="activating" [formGroup]="activateForm" (ngSubmit)="activate()" class="sign-up-form">
+        <h4 class="title2">Enter Code For Activating</h4>
+            <div class="input-field">
+              <i class="fas fa-lock"></i>
+              <input type="text" formControlName="code" placeholder="Activation Code"/>
+            </div>
+          <div>
+            <re-captcha formControlName="recaptcha" siteKey="{{ siteKey }}" (resolved)="handleRecaptchaResponseAct($event)" reCaptchaValueAccessor></re-captcha>
+          </div>
+          <button [class.btn-disabled]="!activateForm.valid" type="submit" class="btn solid">SUBMIT</button>
       </form>
     </div>
   </div>
+
+
 
   <div class="panels-container">
     <div class="panel left-panel">

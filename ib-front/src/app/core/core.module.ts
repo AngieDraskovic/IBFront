@@ -6,18 +6,20 @@ import {AuthService} from "./services/auth.service";
 import {AuthGuard} from "./guards/auth.guard";
 import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {AuthInterceptor} from "./interceptors/auth.interceptor";
+import {GoogleSigninButtonModule} from "@abacritt/angularx-social-login";
 
 
 @NgModule({
   declarations: [
     LoginRegistrationComponent
   ],
-  imports: [
-    CommonModule,
-    HttpClientModule,
-    ReactiveFormsModule,
-    NgOptimizedImage,
-  ],
+    imports: [
+        CommonModule,
+        HttpClientModule,
+        ReactiveFormsModule,
+        NgOptimizedImage,
+        GoogleSigninButtonModule,
+    ],
   providers: [
     AuthService,
     AuthGuard,

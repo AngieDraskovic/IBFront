@@ -3,6 +3,7 @@ import {NavItem} from "../../models/nav-item";
 import {NavigationService} from "../../services/navigation.service";
 import {AuthService} from "../../services/auth.service";
 import {Router} from "@angular/router";
+import {SocialAuthService} from "@abacritt/angularx-social-login";
 
 interface SideNavToggle {
   screenWidth: number;
@@ -21,7 +22,10 @@ export class NavigationComponent implements OnInit {
 
   navItems: NavItem[] = [];
 
-  constructor(private authService: AuthService, private router: Router, private linkService: NavigationService) {
+  constructor(private authService: AuthService,
+              private socialAuthService: SocialAuthService,
+              private router: Router,
+              private linkService: NavigationService) {
   }
 
   ngOnInit(): void {
@@ -44,6 +48,7 @@ export class NavigationComponent implements OnInit {
 
   logOut() {
     this.authService.logout();
+    this.socialAuthService.signOut();
     this.router.navigate(['/login-register']);
   }
 }

@@ -189,6 +189,16 @@ input[type="radio"]:checked + label:before {
   transition: 0.3s;
 }
 
+.google div {
+  border: none !important;
+  outline: none !important;
+}
+
+.google div div {
+  border: none !important;
+  outline: none !important;
+}
+
 .social-icon:hover {
   color: #4481eb;
   border-color: #4481eb;

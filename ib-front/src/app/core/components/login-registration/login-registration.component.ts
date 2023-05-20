@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {AbstractControl, FormControl, FormGroup, ValidatorFn, Validators} from "@angular/forms";
 import {NgToastService} from "ng-angular-popup";
 import {Credentials} from "../../models/credentials";
@@ -7,13 +7,15 @@ import {RegistrationData} from "../../models/registration-data";
 import {AuthService} from "../../services/auth.service";
 import {Router} from "@angular/router";
 import {UserRoleEnum} from "../../enums/user-role.enum";
+import {SocialAuthService, SocialUser} from "@abacritt/angularx-social-login";
+import {OauthToken} from "../../models/oauth-token";
 
 @Component({
   selector: 'app-login-registration',
   templateUrl: './login-registration.component.html',
   styleUrls: ['./login-registration.component.css']
 })
-export class LoginRegistrationComponent {
+export class LoginRegistrationComponent implements OnInit {
   signupMode = false;
 
   allTextPattern = "[a-zA-Z][a-zA-Z]*";
@@ -34,7 +36,48 @@ export class LoginRegistrationComponent {
     confirmPassword: new FormControl('', [Validators.required])
   }, {validators: [match('password', 'confirmPassword')]});
 
-  constructor(private authService: AuthService, private toastService: NgToastService, private router: Router) {
+  constructor(private authService: AuthService,
+              private socialAuthService: SocialAuthService,
+              private toastService: NgToastService,
+              private router: Router) {
+  }
+
+  ngOnInit(): void {
+    this.socialAuthService.authState.subscribe((user) => {
+      if (user != null) {
+        this.loginWithGoogle(user);
+      }
+    });
+  }
+
+  loginWithGoogle(user: SocialUser) {
+    const oauthToken: OauthToken = {token: user.idToken};
+    this.authService.loginWithGoogle(oauthToken).subscribe({
+        next: () => {
+          const user = this.authService.currentUserValue;
+          if (user?.role === UserRoleEnum.Admin) {
+            this.router.navigate(['/admin']);
+          } else if (user?.role === UserRoleEnum.User) {
+            this.router.navigate(['/user']);
+          }
+        },
+        error: (error: CustomError) => {
+          if (error.status == 401 || error.status == 403) {
+            this.toastService.warning({
+              detail: "Warning",
+              summary: error.message,
+              duration: 5000
+            });
+          } else {
+            this.toastService.error({
+              detail: "Error",
+              summary: "Something went wrong.",
+              duration: 5000
+            });
+          }
+        }
+      }
+    );
   }
 
   login() {

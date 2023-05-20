@@ -9,6 +9,7 @@ import {handleSharedError} from "../../shared/utilities/shared-error-handler.uti
 import {RegistrationData} from "../models/registration-data";
 import jwt_decode from "jwt-decode";
 import {UserRoleEnum} from "../enums/user-role.enum";
+import {OauthToken} from "../models/oauth-token";
 
 @Injectable({
   providedIn: 'root'
@@ -41,6 +42,22 @@ export class AuthService {
         }),
         catchError(handleSharedError)
       );
+  }
+
+  loginWithGoogle(oauthToken: OauthToken): Observable<string> {
+    return this.http.post<AuthToken>(`${environment.apiUrl}/oauth/google`, oauthToken).pipe(
+      map((response) => {
+        const token = response.accessToken;
+        const user = this.getUserFromToken(token);
+        if (user) {
+          user.token = token;
+          localStorage.setItem('user', JSON.stringify(user));
+          this.currentUserSubject.next(user);
+        }
+        return token;
+      }),
+      catchError(handleSharedError)
+    );
   }
 
   register(registrationData: RegistrationData, confirmationMethod: string): Observable<any> {

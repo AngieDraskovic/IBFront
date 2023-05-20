@@ -8,6 +8,7 @@ import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import { RecaptchaModule } from 'ng-recaptcha';
 import { ReCaptchaValueAccessorDirective } from 'src/app/shared/utilities/recaptcha-value-accessor';
 import {AuthInterceptor} from "./interceptors/auth.interceptor";
+import {GoogleSigninButtonModule} from "@abacritt/angularx-social-login";
 
 
 @NgModule({

@@ -1,4 +1,5 @@
 import {AfterViewInit, Component} from '@angular/core';
+import { OnInit} from '@angular/core';
 import {AbstractControl, FormControl, FormGroup, ValidatorFn, Validators} from "@angular/forms";
 import {NgToastService} from "ng-angular-popup";
 import {Credentials} from "../../models/credentials";
@@ -7,6 +8,8 @@ import {RegistrationData} from "../../models/registration-data";
 import {AuthService} from "../../services/auth.service";
 import {Router} from "@angular/router";
 import {UserRoleEnum} from "../../enums/user-role.enum";
+import {SocialAuthService, SocialUser} from "@abacritt/angularx-social-login";
+import {OauthToken} from "../../models/oauth-token";
 
 
 

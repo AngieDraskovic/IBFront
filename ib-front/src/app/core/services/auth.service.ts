@@ -16,7 +16,6 @@ import {UserRoleEnum} from "../enums/user-role.enum";
 export class AuthService {
   private currentUserSubject: BehaviorSubject<User | null>;
   public currentUser: Observable<User | null>;
-  private SITE_KEY:string = '6LfygxomAAAAAIgbUdHD0X37WnSXwb7LkWw3rGg2'
 
   constructor(private http: HttpClient) {
     this.currentUserSubject = new BehaviorSubject<User | null>(this.getUserFromToken());
@@ -50,6 +49,14 @@ export class AuthService {
       .pipe(
         catchError(handleSharedError)
       );
+  }
+
+  activateUser(activationId: string, recaptchaToken: string){
+    const body = {
+      activationId: activationId,
+      recaptchaToken: recaptchaToken
+    };
+    return this.http.post<RegistrationData>(`${environment.apiUrl}/user/activate`, body);
   }
 
   logout(): void {
@@ -113,6 +120,5 @@ export class AuthService {
         return UserRoleEnum.Guest;
     }
   }
-
 
 }

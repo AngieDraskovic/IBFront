@@ -18,8 +18,12 @@ import {UserRoleEnum} from "../../enums/user-role.enum";
 })
 export class LoginRegistrationComponent {
   siteKey = '6Le54BwmAAAAAO5Wppw-q7bP4I1rKwZoZ1c_fWyV';
-  recaptchaToken:string = '';
+  recaptchaTokenLogin:string = '';
+  recaptchaTokenReg:string = '';
+  recaptchaTokenAct:string = '';
   signupMode = false;
+
+  activating:boolean = false;
 
   allTextPattern = "[a-zA-Z][a-zA-Z]*";
   phoneNumberPattern = "[0-9 +]?[0-9]+[0-9 \\-]+";
@@ -33,22 +37,51 @@ export class LoginRegistrationComponent {
   signupForm = new FormGroup({
     name: new FormControl('', [Validators.pattern(this.allTextPattern), Validators.required]),
     surname: new FormControl('', [Validators.pattern(this.allTextPattern), Validators.required]),
-    phoneNumber: new FormControl('', [Validators.pattern(this.phoneNumberPattern), Validators.minLength(6), Validators.maxLength(20), Validators.required]),
+    telephoneNumber: new FormControl('', [Validators.pattern(this.phoneNumberPattern), Validators.minLength(6), Validators.maxLength(20), Validators.required]),
     email: new FormControl('', [Validators.email, Validators.required]),
     confirmationMethod: new FormControl('sms'),
     password: new FormControl('', [Validators.required]),
-    confirmPassword: new FormControl('', [Validators.required])
+    confirmPassword: new FormControl('', [Validators.required]),
+    recaptcha: new FormControl('', [Validators.required])
   }, {validators: [match('password', 'confirmPassword')]});
+
+  activateForm = new FormGroup({
+    code: new FormControl('', [Validators.required]),
+    recaptcha: new FormControl('', [Validators.required])
+  });
 
   constructor(private authService: AuthService, private toastService: NgToastService,
               private router: Router) {
   }
 
-  handleRecaptchaResponse(response: string) {
-    console.log(response); 
-    this.recaptchaToken = response;
-  }
 
+  activate(){
+    if (this.activateForm.invalid) {
+      return;
+    }
+   
+    this.authService.activateUser(this.activateForm.controls['code'].value ?? '', this.recaptchaTokenAct).subscribe({
+      next: () => {
+        this.toastService.success({
+          detail: "Activation successful.",
+          summary: " You can now log in using your credentials on login page :)",
+          position: "tl",
+          duration: 8000
+        });
+        this.activating = false;
+      },
+      error: (error: CustomError) => {
+        this.toastService.error({
+          detail: "Error",
+          summary: error.message,
+          duration: 5000
+        });
+      }
+    });
+  
+  
+
+  }
   
   login() {
     if (this.loginForm.invalid) {
@@ -58,10 +91,9 @@ export class LoginRegistrationComponent {
     const credentials: Credentials = {
       email: this.loginForm.controls['email'].value ?? '',
       password: this.loginForm.controls['password'].value ?? '',
-      recaptchaToken: this.recaptchaToken
+      recaptchaToken: this.recaptchaTokenLogin
     };
-    window.alert("cao");
-    console.log(credentials);
+
 
     this.authService.login(credentials).subscribe({
       next: () => {
@@ -73,19 +105,11 @@ export class LoginRegistrationComponent {
         }
       },
       error: (error: CustomError) => {
-        if (error.status == 401 || error.status == 403) {
-          this.toastService.warning({
-            detail: "Warning",
-            summary: error.message,
-            duration: 5000
-          });
-        } else {
-          this.toastService.error({
-            detail: "Error",
-            summary: "Something went wrong.",
-            duration: 5000
-          });
-        }
+        this.toastService.error({
+          detail: "Error",
+          summary: error.message,
+          duration: 5000
+        });
       }
     });
   }
@@ -99,39 +123,50 @@ export class LoginRegistrationComponent {
       name: this.signupForm.controls['name'].value ?? '',
       surname: this.signupForm.controls['surname'].value ?? '',
       email: this.signupForm.controls['email'].value ?? '',
-      phoneNumber: this.signupForm.controls['phoneNumber'].value ?? '',
+      telephoneNumber: this.signupForm.controls['telephoneNumber'].value ?? '',
       password: this.signupForm.controls['password'].value ?? '',
+      recaptchaToken:this.recaptchaTokenReg
     };
 
     this.authService.register(registrationData, this.signupForm.controls['confirmationMethod'].value ?? '').subscribe({
       next: () => {
         this.toastService.success({
           detail: "Registration successful",
-          summary: "Please activate your account via email and proceed to log in.",
+          summary: "We have sent you code via " + this.signupForm.controls['confirmationMethod'].value,
           position: "tl",
-          duration: 5000
+          duration: 7000
         });
+        this.activating = true;
       },
       error: (error: CustomError) => {
-        if (error.status == 409) {
-          this.toastService.warning({
-            detail: "Warning",
-            summary: error.message,
-            position: "tl",
-            duration: 5000
-          });
-        } else {
-          this.toastService.error({
-            detail: "Error",
-            summary: "Something went wrong.",
-            position: "tl",
-            duration: 5000
-          });
-        }
+        this.toastService.error({
+          detail: "Error",
+          summary: error.message,
+          duration: 5000
+        });
       }
     });
   }
+
+
+  handleRecaptchaResponseLogin(response: string) {
+    console.log(response); 
+    this.recaptchaTokenLogin = response;
+  }
+
+  handleRecaptchaResponseReg(response: string) {
+    console.log(response); 
+    this.recaptchaTokenReg = response;
+  }
+
+  
+  handleRecaptchaResponseAct(response: string) {
+    console.log(response); 
+    this.recaptchaTokenAct = response;
+  }
+
 }
+
 
 function match(controlName: string, checkControlName: string): ValidatorFn {
   return (controls: AbstractControl) => {
@@ -149,4 +184,6 @@ function match(controlName: string, checkControlName: string): ValidatorFn {
       return null;
     }
   };
+
+  
 }

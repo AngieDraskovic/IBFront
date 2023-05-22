@@ -1,5 +1,5 @@
 import {AfterViewInit, Component} from '@angular/core';
-import { OnInit} from '@angular/core';
+import {OnInit} from '@angular/core';
 import {AbstractControl, FormControl, FormGroup, ValidatorFn, Validators} from "@angular/forms";
 import {NgToastService} from "ng-angular-popup";
 import {Credentials} from "../../models/credentials";
@@ -10,8 +10,7 @@ import {Router} from "@angular/router";
 import {UserRoleEnum} from "../../enums/user-role.enum";
 import {SocialAuthService, SocialUser} from "@abacritt/angularx-social-login";
 import {OauthToken} from "../../models/oauth-token";
-
-
+import {match} from "../../../shared/utilities/match.validator";
 
 
 @Component({
@@ -19,14 +18,14 @@ import {OauthToken} from "../../models/oauth-token";
   templateUrl: './login-registration.component.html',
   styleUrls: ['./login-registration.component.css']
 })
-export class LoginRegistrationComponent {
+export class LoginRegistrationComponent implements OnInit {
   siteKey = '6Le54BwmAAAAAO5Wppw-q7bP4I1rKwZoZ1c_fWyV';
-  recaptchaTokenLogin:string = '';
-  recaptchaTokenReg:string = '';
-  recaptchaTokenAct:string = '';
+  recaptchaTokenLogin: string = '';
+  recaptchaTokenReg: string = '';
+  recaptchaTokenAct: string = '';
   signupMode = false;
 
-  activating:boolean = false;
+  activating: boolean = false;
 
   allTextPattern = "[a-zA-Z][a-zA-Z]*";
   phoneNumberPattern = "[0-9 +]?[0-9]+[0-9 \\-]+";
@@ -53,17 +52,26 @@ export class LoginRegistrationComponent {
     recaptcha: new FormControl('', [Validators.required])
   });
 
-  constructor(private authService: AuthService, private toastService: NgToastService,
+  constructor(private authService: AuthService,
+              private socialAuthService: SocialAuthService,
+              private toastService: NgToastService,
               private router: Router) {
   }
 
+  ngOnInit(): void {
+    this.socialAuthService.authState.subscribe((user) => {
+      if (user != null) {
+        this.loginWithGoogle(user);
+      }
+    });
+  }
 
-  activate(){
+  activate() {
     if (this.activateForm.invalid) {
       return;
     }
-   
-    this.authService.activateUser(this.activateForm.controls['code'].value ?? '', this.recaptchaTokenAct).subscribe({
+
+    this.authService.activateUser(this.activateForm.controls['code'].value ?? '').subscribe({
       next: () => {
         this.toastService.success({
           detail: "Activation successful.",
@@ -81,11 +89,38 @@ export class LoginRegistrationComponent {
         });
       }
     });
-  
-  
-
   }
-  
+
+  loginWithGoogle(user: SocialUser) {
+    const oauthToken: OauthToken = {token: user.idToken};
+    this.authService.loginWithGoogle(oauthToken).subscribe({
+        next: () => {
+          const user = this.authService.currentUserValue;
+          if (user?.role === UserRoleEnum.Admin) {
+            this.router.navigate(['/admin']);
+          } else if (user?.role === UserRoleEnum.User) {
+            this.router.navigate(['/user']);
+          }
+        },
+        error: (error: CustomError) => {
+          if (error.status == 401 || error.status == 403) {
+            this.toastService.warning({
+              detail: "Warning",
+              summary: error.message,
+              duration: 5000
+            });
+          } else {
+            this.toastService.error({
+              detail: "Error",
+              summary: "Something went wrong.",
+              duration: 5000
+            });
+          }
+        }
+      }
+    );
+  }
+
   login() {
     if (this.loginForm.invalid) {
       return;
@@ -128,7 +163,7 @@ export class LoginRegistrationComponent {
       email: this.signupForm.controls['email'].value ?? '',
       telephoneNumber: this.signupForm.controls['telephoneNumber'].value ?? '',
       password: this.signupForm.controls['password'].value ?? '',
-      recaptchaToken:this.recaptchaTokenReg
+      recaptchaToken: this.recaptchaTokenReg
     };
 
     this.authService.register(registrationData, this.signupForm.controls['confirmationMethod'].value ?? '').subscribe({
@@ -151,42 +186,18 @@ export class LoginRegistrationComponent {
     });
   }
 
-
   handleRecaptchaResponseLogin(response: string) {
-    console.log(response); 
+    console.log(response);
     this.recaptchaTokenLogin = response;
   }
 
   handleRecaptchaResponseReg(response: string) {
-    console.log(response); 
+    console.log(response);
     this.recaptchaTokenReg = response;
   }
 
-  
   handleRecaptchaResponseAct(response: string) {
-    console.log(response); 
+    console.log(response);
     this.recaptchaTokenAct = response;
   }
-
-}
-
-
-function match(controlName: string, checkControlName: string): ValidatorFn {
-  return (controls: AbstractControl) => {
-    const control = controls.get(controlName);
-    const checkControl = controls.get(checkControlName);
-
-    if (checkControl?.errors && !checkControl.errors['matching']) {
-      return null;
-    }
-
-    if (control?.value !== checkControl?.value) {
-      controls.get(checkControlName)?.setErrors({matching: true});
-      return {matching: true};
-    } else {
-      return null;
-    }
-  };
-
-  
 }

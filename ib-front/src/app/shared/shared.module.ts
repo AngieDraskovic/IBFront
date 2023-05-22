@@ -5,15 +5,18 @@ import {RouterLink, RouterLinkActive} from "@angular/router";
 import {MatDialogModule} from "@angular/material/dialog";
 import {FormsModule} from "@angular/forms";
 import {NgxPaginationModule} from "ngx-pagination";
+import { DropdownComponent } from './components/dropdown/dropdown.component';
 
 
 @NgModule({
   declarations: [
-    NavigationComponent
+    NavigationComponent,
+    DropdownComponent
   ],
-  exports: [
-    NavigationComponent
-  ],
+    exports: [
+        NavigationComponent,
+        DropdownComponent
+    ],
   imports: [
     CommonModule,
     RouterLink,

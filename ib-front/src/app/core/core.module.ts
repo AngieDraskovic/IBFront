@@ -9,20 +9,29 @@ import { RecaptchaModule } from 'ng-recaptcha';
 import { ReCaptchaValueAccessorDirective } from 'src/app/shared/utilities/recaptcha-value-accessor';
 import {AuthInterceptor} from "./interceptors/auth.interceptor";
 import {GoogleSigninButtonModule} from "@abacritt/angularx-social-login";
+import { LoginComponent } from './components/login/login.component';
+import { RegisterComponent } from './components/register/register.component';
+import { ActivationComponent } from './components/activation/activation.component';
+import {SharedModule} from "../shared/shared.module";
 
 
 @NgModule({
   declarations: [
     LoginRegistrationComponent,
-    ReCaptchaValueAccessorDirective
+    ReCaptchaValueAccessorDirective,
+    LoginComponent,
+    RegisterComponent,
+    ActivationComponent
   ],
-  imports: [
-    CommonModule,
-    HttpClientModule,
-    ReactiveFormsModule,
-    NgOptimizedImage,
-    RecaptchaModule
-  ],
+    imports: [
+        CommonModule,
+        HttpClientModule,
+        ReactiveFormsModule,
+        NgOptimizedImage,
+        RecaptchaModule,
+        GoogleSigninButtonModule,
+        SharedModule
+    ],
   providers: [
     AuthService,
     AuthGuard,

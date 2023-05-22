@@ -68,12 +68,18 @@ export class AuthService {
       );
   }
 
-  activateUser(activationId: string, recaptchaToken: string){
-    const body = {
-      activationId: activationId,
-      recaptchaToken: recaptchaToken
-    };
-    return this.http.post<RegistrationData>(`${environment.apiUrl}/user/activate`, body);
+  checkEmail(email: string): Observable<boolean> {
+    return this.http.get<boolean>(`${environment.apiUrl}/user/exists?email=${email}`)
+      .pipe(
+        catchError(handleSharedError)
+      );
+  }
+
+  activateUser(activationId: string) {
+    return this.http.get(`${environment.apiUrl}/user/activate/${activationId}`)
+      .pipe(
+        catchError(handleSharedError)
+      );
   }
 
   logout(): void {

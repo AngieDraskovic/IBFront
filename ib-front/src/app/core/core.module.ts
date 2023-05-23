@@ -1,6 +1,6 @@
 import {NgModule,  NO_ERRORS_SCHEMA } from '@angular/core';
 import {CommonModule, NgOptimizedImage} from '@angular/common';
-import {LoginRegistrationComponent} from './components/login-registration/login-registration.component';
+import {Home} from './components/home/home';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {AuthService} from "./services/auth.service";
 import {AuthGuard} from "./guards/auth.guard";
@@ -11,27 +11,34 @@ import {AuthInterceptor} from "./interceptors/auth.interceptor";
 import {GoogleSigninButtonModule} from "@abacritt/angularx-social-login";
 import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
-import { ActivationComponent } from './components/activation/activation.component';
 import {SharedModule} from "../shared/shared.module";
+import { OtpInputComponent } from './components/otp-input/otp-input.component';
+import { AuthFormComponent } from './forms/auth-form/auth-form.component';
+import { MoreInfoFormComponent } from './forms/more-info-form/more-info-form.component';
+import { ActivationFormComponent } from './forms/activation-form/activation-form.component';
 
 
 @NgModule({
   declarations: [
-    LoginRegistrationComponent,
+    Home,
     ReCaptchaValueAccessorDirective,
     LoginComponent,
     RegisterComponent,
-    ActivationComponent
+    OtpInputComponent,
+    AuthFormComponent,
+    MoreInfoFormComponent,
+    ActivationFormComponent
   ],
-    imports: [
-        CommonModule,
-        HttpClientModule,
-        ReactiveFormsModule,
-        NgOptimizedImage,
-        RecaptchaModule,
-        GoogleSigninButtonModule,
-        SharedModule
-    ],
+  imports: [
+    CommonModule,
+    HttpClientModule,
+    ReactiveFormsModule,
+    NgOptimizedImage,
+    RecaptchaModule,
+    GoogleSigninButtonModule,
+    SharedModule,
+    FormsModule
+  ],
   providers: [
     AuthService,
     AuthGuard,
@@ -42,7 +49,7 @@ import {SharedModule} from "../shared/shared.module";
     },
   ],
   exports: [
-    LoginRegistrationComponent
+    Home
   ],
   schemas: [NO_ERRORS_SCHEMA],
 })

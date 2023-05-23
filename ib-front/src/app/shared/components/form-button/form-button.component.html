@@ -1,0 +1,6 @@
+<button class="btn solid"
+        [class.btn-disabled]="formGroup.invalid"
+        [disabled]="formGroup.invalid"
+        (click)="submitForm()">
+  {{buttonText}}
+</button>

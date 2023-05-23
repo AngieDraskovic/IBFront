@@ -4,5 +4,6 @@ export interface RegistrationData {
   email: string;
   telephoneNumber: string;
   password: string;
-  recaptchaToken:string
+  recaptchaToken: string
+  confirmationMethod: 'Email' | 'SMS'
 }

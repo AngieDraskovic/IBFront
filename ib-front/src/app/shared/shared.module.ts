@@ -3,20 +3,32 @@ import {CommonModule, NgOptimizedImage} from '@angular/common';
 import {NavigationComponent} from '../core/components/navigation/navigation.component';
 import {RouterLink, RouterLinkActive} from "@angular/router";
 import {MatDialogModule} from "@angular/material/dialog";
-import {FormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {NgxPaginationModule} from "ngx-pagination";
-import { DropdownComponent } from './components/dropdown/dropdown.component';
+import {DropdownComponent} from './components/dropdown/dropdown.component';
+import {FormFieldComponent} from './components/form-field/form-field.component';
+import {FormButtonComponent} from './components/form-button/form-button.component';
+import {BackButtonComponent} from './components/back-button/back-button.component';
+import { SpinnerComponent } from './components/spinner/spinner.component';
 
 
 @NgModule({
   declarations: [
     NavigationComponent,
-    DropdownComponent
+    DropdownComponent,
+    FormFieldComponent,
+    FormButtonComponent,
+    BackButtonComponent,
+    SpinnerComponent
   ],
-    exports: [
-        NavigationComponent,
-        DropdownComponent
-    ],
+  exports: [
+    NavigationComponent,
+    DropdownComponent,
+    FormFieldComponent,
+    FormButtonComponent,
+    BackButtonComponent,
+    SpinnerComponent
+  ],
   imports: [
     CommonModule,
     RouterLink,
@@ -24,7 +36,8 @@ import { DropdownComponent } from './components/dropdown/dropdown.component';
     NgOptimizedImage,
     MatDialogModule,
     FormsModule,
-    NgxPaginationModule
+    NgxPaginationModule,
+    ReactiveFormsModule
   ]
 })
 export class SharedModule {

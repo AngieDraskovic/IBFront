@@ -1,0 +1,15 @@
+<div class="container">
+  <header>
+    <i class="fa fa-shield-halved"></i>
+  </header>
+  <h4>Enter OTP Code</h4>
+  <form (ngSubmit)="verifyOTP()">
+    <div class="input-field">
+      <input  (keyup)="onKey($event, 0)" [(ngModel)]="otp[0]" #digit0 />
+      <input [disabled]="!enableInputs[1]" (keyup)="onKey($event, 1)" [(ngModel)]="otp[1]" name="digit1" #digit1="ngModel" />
+      <input [disabled]="!enableInputs[2]" (keyup)="onKey($event, 2)" [(ngModel)]="otp[2]" name="digit2" #digit2="ngModel" />
+      <input [disabled]="!enableInputs[3]" (keyup)="onKey($event, 3)" [(ngModel)]="otp[3]" name="digit3" #digit3="ngModel" />
+    </div>
+    <button [ngClass]="{'active': otp[3] && otp[3] !== ''}">Verify OTP</button>
+  </form>
+</div>

@@ -14,7 +14,7 @@
   height: 100%;
   background-color: #f0f0f0;
   display: grid;
-  grid-template-columns: 15% 75% 10%;
+  grid-template-columns: 48px 75% 10%;
   border: 2px #2a2f3b;
   border-radius: 55px;
   padding: 0 0.4rem;

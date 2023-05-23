@@ -1,0 +1,41 @@
+<form [formGroup]="authForm">
+  <h2 class="title">Sign up</h2>
+
+  <app-form-field
+    [formGroup]="authForm"
+    [controlName]="'email'"
+    [type]="'email'"
+    [icon]="'fas fa-envelope'"
+    [placeholder]="'Email'"
+    [errorMessages]="{
+      email: 'Please enter a valid email'
+    }"
+  >
+  </app-form-field>
+
+  <app-form-field
+    [formGroup]="authForm"
+    [controlName]="'password'"
+    [type]="'password'"
+    [icon]="'fas fa-lock'"
+    [placeholder]="'Password'">
+  </app-form-field>
+
+  <app-form-field
+    [formGroup]="authForm"
+    [controlName]="'confirmPassword'"
+    [type]="'password'"
+    [icon]="'fas fa-lock'"
+    [placeholder]="'Confirm password'"
+    [errorMessages]="{
+      matching: 'Passwords must match'
+    }"
+  >
+  </app-form-field>
+
+  <app-form-button
+    [formGroup]="authForm"
+    [buttonText]="'CONTINUE'"
+    (onSubmit)="onSubmit()">
+  </app-form-button>
+</form>

@@ -1,0 +1,25 @@
+<form [formGroup]="activationForm">
+  <h2 class="title">Activate your account</h2>
+
+  <p class="activation-text">
+    Thank you for registering. {{ confirmationMessage }}
+    <span>
+      {{ anonymizedContact }}.
+    </span>
+  </p>
+
+  <app-form-field
+    [formGroup]="activationForm"
+    [controlName]="'code'"
+    [type]="'text'"
+    [icon]="'fas fa-lock'"
+    [placeholder]="'Activation Code'"
+  >
+  </app-form-field>
+
+  <app-form-button
+    [formGroup]="activationForm"
+    [buttonText]="'ACTIVATE'"
+    (onSubmit)="activate()">
+  </app-form-button>
+</form>

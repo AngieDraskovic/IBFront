@@ -1,103 +1,24 @@
-<form [formGroup]="authForm" (ngSubmit)="next()"
-      [ngClass]="animationType + (activeForm === ActiveForm.AUTH ? ' active' : '')">
-  <h2 class="title">Sign up</h2>
+<app-auth-form
+  class="step"
+  (formCompleted)="nextStep($event)"
+  [ngClass]="animationType + (currentStep === RegisterStep.AuthForm ? ' active' : '')"
+>
+</app-auth-form>
 
-  <div class="input-field"
-       [class.input-field-error]="authForm.get('email')?.invalid && authForm.get('email')?.touched && authForm.get('email')?.errors?.['email']">
-    <i class="fas fa-envelope"></i>
-    <input type="email" formControlName="email" placeholder="Email"/>
-    <span class="error-text"
-          *ngIf="authForm.get('email')?.invalid && authForm.get('email')?.touched && authForm.get('email')?.errors?.['email']">
-        Please enter a valid email
-      </span>
-  </div>
+<app-more-info-form
+  class="step"
+  (formCompleted)="formCompleted($event)"
+  (goBack)="previousStep()"
+  [ngClass]="animationType + (currentStep === RegisterStep.MoreInfoForm ? ' active' : '')"
+>
+</app-more-info-form>
 
-  <div class="input-field"
-       [class.input-field-error]="authForm.controls.password.invalid && authForm.controls.password.touched">
-    <i class="fas fa-lock"></i>
-    <input type="password" formControlName="password" placeholder="Password"/>
-    <span class="error-text"
-          *ngIf="authForm.controls.password.invalid && authForm.controls.password.touched">
-        Password must be at least 6 characters.
-      </span>
-  </div>
+<app-activation-form
+  class="step"
+  (onActivated)="reset()"
+  [confirmationData]="confirmationData"
+  [ngClass]="animationType + (currentStep === RegisterStep.AccountActivationForm ? ' active' : '')"
+>
+</app-activation-form>
 
-  <div class="input-field"
-       [class.input-field-error]="authForm.get('confirmPassword')?.touched && authForm.get('confirmPassword')?.errors?.['matching']">
-    <i class="fas fa-lock"></i>
-    <input type="password" formControlName="confirmPassword" placeholder="Repeat password"/>
-    <span class="error-text"
-          *ngIf="authForm.get('confirmPassword')?.touched && authForm.get('confirmPassword')?.errors?.['matching']">
-        Passwords do not match.
-      </span>
-  </div>
-
-  <button [class.btn-disabled]="authForm.invalid" [disabled]="authForm.invalid" type="submit" class="btn solid">
-    CONTINUE
-  </button>
-</form>
-
-<form [formGroup]="moreInfoForm" (ngSubmit)="register()"
-      [ngClass]="animationType + (activeForm === ActiveForm.ADDITIONAL_INFORMATION ? ' active' : '')">
-  <h2 class="title">Additional Info</h2>
-
-  <div class="input-container">
-    <div class="input-field"
-         [class.input-field-error]="moreInfoForm.get('name')?.invalid && moreInfoForm.get('name')?.touched && moreInfoForm.get('name')?.errors?.['pattern']">
-      <i class="fas fa-user"></i>
-      <input type="text" formControlName="name" placeholder="Name"/>
-      <span class="error-text"
-            *ngIf="moreInfoForm.get('name')?.invalid && moreInfoForm.get('name')?.touched && moreInfoForm.get('name')?.errors?.['pattern']">
-        Wrong format
-      </span>
-    </div>
-
-    <div class="input-field"
-         [class.input-field-error]="moreInfoForm.get('surname')?.invalid && moreInfoForm.get('surname')?.touched && moreInfoForm.get('surname')?.errors?.['pattern']">
-      <i class="fas fa-user"></i>
-      <input type="text" formControlName="surname" placeholder="Surname"/>
-      <span class="error-text"
-            *ngIf="moreInfoForm.get('surname')?.invalid && moreInfoForm.get('surname')?.touched && moreInfoForm.get('surname')?.errors?.['pattern']">
-        Wrong format
-      </span>
-    </div>
-  </div>
-
-  <div class="input-field"
-       [class.input-field-error]="moreInfoForm.get('telephoneNumber')?.invalid && moreInfoForm.get('telephoneNumber')?.touched && (moreInfoForm.get('telephoneNumber')?.errors?.['minlength'] || moreInfoForm.get('telephoneNumber')?.errors?.['maxlength'] || moreInfoForm.get('telephoneNumber')?.errors?.['pattern'])">
-    <i class="fas fa-phone"></i>
-    <input type="text" formControlName="telephoneNumber" placeholder="Phone number"/>
-    <span class="error-text"
-          *ngIf="moreInfoForm.get('telephoneNumber')?.invalid && moreInfoForm.get('telephoneNumber')?.touched && (moreInfoForm.get('telephoneNumber')?.errors?.['minlength'] || moreInfoForm.get('telephoneNumber')?.errors?.['maxlength'] || moreInfoForm.get('telephoneNumber')?.errors?.['pattern'])">
-        Wrong format
-      </span>
-  </div>
-
-  <app-dropdown formControlName="confirmationMethod" [options]="['Email', 'SMS']"
-                [placeholder]="'Select confirmation method'" class="confirmation-method"></app-dropdown>
-
-  <re-captcha class="captcha" formControlName="recaptcha" siteKey="{{ siteKey }}"
-              (resolved)="handleRecaptchaResponse($event)" reCaptchaValueAccessor></re-captcha>
-
-  <div class="btn-container">
-    <button type="button" (click)="back()" class="btn back solid">BACK</button>
-    <button [class.btn-disabled]="moreInfoForm.invalid" [disabled]="moreInfoForm.invalid" type="submit"
-            class="btn solid">FINISH
-    </button>
-  </div>
-</form>
-
-<form [formGroup]="activationForm" (ngSubmit)="activate()"
-      [ngClass]="animationType + (activeForm === ActiveForm.ACCOUNT_ACTIVATION ? ' active' : '')">
-  <h2 class="title">Activate your account</h2>
-
-  <p class="activation-text">Thank you for registering. {{ confirmationMessage }}
-    <span>{{ anonymizedContact }}.</span></p>
-
-  <div class="input-field">
-    <i class="fas fa-lock"></i>
-    <input type="text" formControlName="code" placeholder="Activation Code"/>
-  </div>
-
-  <button [class.btn-disabled]="!activationForm.valid" type="submit" class="btn solid">ACTIVATE</button>
-</form>
+<app-spinner *ngIf="loadingService.isLoading | async"></app-spinner>

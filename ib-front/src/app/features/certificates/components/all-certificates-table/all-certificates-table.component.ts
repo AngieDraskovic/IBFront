@@ -21,7 +21,7 @@ export class AllCertificatesTableComponent implements OnInit {
   itemsPerPage: number = 5;
   totalItems: number = 0;
   allCertificates: Certificate[] = [];
-  role: UserRoleEnum = UserRoleEnum.Guest;
+  role: UserRoleEnum | null = UserRoleEnum.Guest;
 
 
   constructor(private authService: AuthService,
@@ -32,8 +32,7 @@ export class AllCertificatesTableComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.role = this.authService.currentUserValue?.role ?? UserRoleEnum.Guest;
-    this.refresh()
+    this.role = this.authService.getUserRole();
   }
 
   refresh() {

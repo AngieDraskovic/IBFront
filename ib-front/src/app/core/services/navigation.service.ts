@@ -10,7 +10,7 @@ export class NavigationService {
   constructor(private authService: AuthService) {}
 
   getNavItems(): NavItem[] {
-    const user = this.authService.currentUserValue;
+    const user = this.authService.getUserFromToken();
 
     if (!user) {
       return [];

@@ -3,7 +3,7 @@ import {environment} from "../../../../environments/environment";
 import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
 import {catchError, map, Observable} from "rxjs";
 import {Certificate} from "../models/certificate";
-import {handleSharedError} from "../../../shared/utilities/shared-error-handler.util";
+import {handleSharedError} from "../../../core/utilities/shared-error-handler.util";
 import {CertificateStatus} from "../enums/certificate-status.enum";
 import {CertificateType} from "../enums/certificate-type.enum";
 import {User} from "../../../core/models/user";

@@ -1,97 +1,29 @@
-<!--<form-->
-<!--  [formGroup]="loginForm"-->
-<!--  (ngSubmit)="login()"-->
-<!--&gt;-->
+<app-login-form
+  class="step"
+  [ngClass]="animationType + (currentStep === LoginStep.LoginForm ? ' active' : '')"
+  (onBack)="onBack()"
+  (onLoginSubmit)="handleLoginFormSubmit($event)"
+>
+</app-login-form>
 
-<!--  <h2 class="title">Sign in</h2>-->
+<app-confirmation-method-form
+  class="step"
+  [ngClass]="animationType + (currentStep === LoginStep.ConfirmationMethodForm ? ' active' : '')"
+  (onBack)="onBack()"
+  (onConfirmationMethodSubmit)="handleConfirmationMethodFormSubmit($event)"
+>
 
-<!--  <div-->
-<!--    class="input-field"-->
-<!--    [class.input-field-error]="loginForm.get('email')?.invalid &&-->
-<!--                              loginForm.get('email')?.touched &&-->
-<!--                              loginForm.get('email')?.errors?.['email']"-->
-<!--  >-->
-<!--    <i class="fas fa-user"></i>-->
-<!--    <input-->
-<!--      name="digit0"-->
+</app-confirmation-method-form>
 
-<!--      type="email"-->
-<!--      placeholder="Email"-->
-<!--      formControlName="email"-->
-<!--      required-->
-<!--    />-->
-<!--    <span-->
-<!--      class="error-text"-->
-<!--      *ngIf="loginForm.get('email')?.invalid &&-->
-<!--             loginForm.get('email')?.touched &&-->
-<!--             loginForm.get('email')?.errors?.['email']"-->
-<!--    >-->
-<!--      Please enter a valid email-->
-<!--    </span>-->
-<!--  </div>-->
+<app-otp-form
+  class="step"
+  [ngClass]="animationType + (currentStep === LoginStep.OTPForm ? ' active' : '')"
+  (onBack)="onBack()"
+  (onOtpSubmit)="handleOTPFormSubmit($event)"
+>
 
-<!--  <div class="input-field">-->
-<!--    <i class="fas fa-lock"></i>-->
-<!--    <input-->
-<!--      type="password"-->
-<!--      formControlName="password"-->
-<!--      placeholder="Password"-->
-<!--    />-->
-<!--  </div>-->
+</app-otp-form>
 
-<!--  <re-captcha-->
-<!--    formControlName="recaptcha"-->
-<!--    siteKey="{{ siteKey }}"-->
-<!--    (resolved)="handleRecaptchaResponse($event)"-->
-<!--    reCaptchaValueAccessor-->
-<!--    class="captcha"-->
-<!--  ></re-captcha>-->
+<app-spinner *ngIf="loadingService.isLoading | async"></app-spinner>
 
-<!--  <div class="g-recaptcha" data-sitekey="{{ siteKey }}"></div>-->
 
-<!--  <button-->
-<!--    [class.btn-disabled]="!loginForm.valid"-->
-<!--    type="submit"-->
-<!--    class="btn solid"-->
-<!--  >-->
-<!--    Login-->
-<!--  </button>-->
-
-<!--  <p class="social-text">Or Sign in with social platforms</p>-->
-
-<!--  <div class="social-media">-->
-<!--    <asl-google-signin-button type='icon' size='large'></asl-google-signin-button>-->
-<!--  </div>-->
-
-<!--</form>-->
-
-<!--<form>-->
-<!--  <div class="icon-holder">-->
-<!--    <i class="fa-solid fa-shield-halved shield-icon"></i>-->
-<!--  </div>-->
-
-<!--  <h2 class="title2">Choose confirmation method</h2>-->
-
-<!--  <section class="radio-section">-->
-<!--    <div class="radio-list">-->
-<!--      <div class="radio-item">-->
-<!--        <input type="radio" name="radio" id="radio1">-->
-<!--        <label for="radio1">Email</label>-->
-<!--      </div>-->
-<!--      <div class="radio-item">-->
-<!--        <input type="radio" name="radio" id="radio2">-->
-<!--        <label for="radio2">SMS</label>-->
-<!--      </div>-->
-<!--    </div>-->
-<!--  </section>-->
-
-<!--  <button-->
-<!--    [class.btn-disabled]="!loginForm.valid"-->
-<!--    type="submit"-->
-<!--    class="btn solid"-->
-<!--  >-->
-<!--    Continue-->
-<!--  </button>-->
-<!--</form>-->
-
-<app-otp-input class="slide-container active-container slide-in-left"></app-otp-input>

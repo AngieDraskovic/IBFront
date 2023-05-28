@@ -1,147 +1,86 @@
 import {Injectable} from '@angular/core';
-import {BehaviorSubject, catchError, map, Observable} from "rxjs";
-import {User} from "../models/user";
-import {HttpClient, HttpParams} from "@angular/common/http";
+import {catchError, map, Observable} from "rxjs";
+import {HttpClient} from "@angular/common/http";
 import {Credentials} from "../models/credentials";
 import {AuthToken} from "../models/auth-token";
 import {environment} from "../../../environments/environment";
-import {handleSharedError} from "../../shared/utilities/shared-error-handler.util";
-import {RegistrationData} from "../models/registration-data";
-import jwt_decode from "jwt-decode";
-import {UserRoleEnum} from "../enums/user-role.enum";
+import {handleSharedError} from "../utilities/shared-error-handler.util";
 import {OauthToken} from "../models/oauth-token";
+import {extractUserFromToken, isTokenExpired} from "../utilities/auth-token.util";
+import {User} from "../models/user";
+import {UserRoleEnum} from "../enums/user-role.enum";
+import {LoginResponse} from "../models/login-response";
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private currentUserSubject: BehaviorSubject<User | null>;
-  public currentUser: Observable<User | null>;
+  private readonly apiUrl = `${environment.apiUrl}/user`;
 
   constructor(private http: HttpClient) {
-    this.currentUserSubject = new BehaviorSubject<User | null>(this.getUserFromToken());
-    this.currentUser = this.currentUserSubject.asObservable();
+    this.checkToken();
   }
 
-  public get currentUserValue(): User | null {
-    return this.currentUserSubject.value;
-  }
-
-  login(auth: Credentials): Observable<string> {
-    return this.http.post<AuthToken>(`${environment.apiUrl}/user/login2`, auth)
-      .pipe(
-        map((response) => {
-          const token = response.accessToken;
-          const user = this.getUserFromToken(token);
-          if (user) {
-            user.token = token;
-            localStorage.setItem('user', JSON.stringify(user));
-            this.currentUserSubject.next(user);
-          }
-          return token;
-        }),
-        catchError(handleSharedError)
-      );
-  }
-
-  loginWithGoogle(oauthToken: OauthToken): Observable<string> {
-    return this.http.post<AuthToken>(`${environment.apiUrl}/oauth/google`, oauthToken).pipe(
-      map((response) => {
-        const token = response.accessToken;
-        const user = this.getUserFromToken(token);
-        if (user) {
-          user.token = token;
-          localStorage.setItem('user', JSON.stringify(user));
-          this.currentUserSubject.next(user);
-        }
-        return token;
-      }),
-      catchError(handleSharedError)
-    );
-  }
-
-  register(registrationData: RegistrationData, confirmationMethod: string): Observable<any> {
-    let params = new HttpParams().set('confirmationMethod', confirmationMethod);
-    return this.http.post<any>(`${environment.apiUrl}/user/register`, registrationData, {params})
+  login(auth: Credentials): Observable<LoginResponse> {
+    return this.http.post<LoginResponse>(`${this.apiUrl}/login`, auth)
       .pipe(
         catchError(handleSharedError)
       );
   }
 
-  checkEmail(email: string): Observable<boolean> {
-    return this.http.get<boolean>(`${environment.apiUrl}/user/exists?email=${email}`)
+  loginWithGoogle(oauthToken: OauthToken): Observable<void> {
+    return this.http.post<AuthToken>(`${environment.apiUrl}/oauth/google`, oauthToken)
       .pipe(
+        map((response) => this.handleAuthResponse(response)),
         catchError(handleSharedError)
       );
   }
 
-  activateUser(activationId: string) {
-    return this.http.get(`${environment.apiUrl}/user/activate/${activationId}`)
-      .pipe(
-        catchError(handleSharedError)
-      );
+  handleAuthResponse(response: AuthToken) {
+    const token = response.accessToken;
+    this.setToken(token);
   }
 
   logout(): void {
-    localStorage.removeItem('user');
-    this.currentUserSubject.next(null);
+    localStorage.removeItem('token');
   }
 
-  private getUserFromToken(token?: string): User | null {
-    try {
-      token = token || JSON.parse(localStorage.getItem('user') || '{}').token;
-    } catch (error) {
-      localStorage.removeItem('user');
+  getUserRole(): UserRoleEnum {
+    const user: User | null = this.getUserFromToken();
+    if (user == null) {
+      return UserRoleEnum.Guest;
     }
 
-    if (!token) {
-      return null;
-    }
+    return user.role;
+  }
 
-    try {
-      const decodedToken: any = jwt_decode(token);
-      const current_time = Date.now().valueOf() / 1000;
-      if (decodedToken.exp < current_time) {
-        localStorage.removeItem('user');
-        return null;
-      }
+  getUserFromToken(): User | null {
+    return extractUserFromToken(this.getToken());
+  }
 
-      const role = this.mapRole(decodedToken.role);
-      return {
-        id: decodedToken.jti,
-        email: decodedToken.sub,
-        role: role,
-        token,
-      };
-    } catch (error) {
-      return null;
+  isLoggedIn(): boolean {
+    const token = this.getToken();
+    return token ? !isTokenExpired(token) : false;
+  }
+
+  private checkToken(): void {
+    const token: string | null = this.getToken();
+    if (token != null && this.isTokenExpired(token)) {
+      localStorage.removeItem('token');
     }
   }
 
-
-  isTokenExpired(): boolean {
-    const currentUser = this.currentUserValue;
-    if (!currentUser || !currentUser.token) {
-      return true;
-    }
-
-    const decodedToken: any = jwt_decode(currentUser.token);
-    const expirationDate = decodedToken.exp;
-    const now = (new Date()).getTime() / 1000;
-
-    return expirationDate < now;
+  isTokenExpired(token: string): boolean {
+    const expiry = JSON.parse(atob(token.split('.')[1])).exp;
+    return (Math.floor(new Date().getTime() / 1000)) >= expiry;
   }
 
-
-  private mapRole(roleString: string): UserRoleEnum {
-    switch (roleString) {
-      case 'ROLE_ADMIN':
-        return UserRoleEnum.Admin;
-      case 'ROLE_USER':
-        return UserRoleEnum.User;
-      default:
-        return UserRoleEnum.Guest;
-    }
+  private setToken(token: string): void {
+    localStorage.setItem('token', token);
   }
 
+  getToken(): string | null {
+    return localStorage.getItem('token');
+  }
 }

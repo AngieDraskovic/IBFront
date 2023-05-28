@@ -12,10 +12,12 @@ import {GoogleSigninButtonModule} from "@abacritt/angularx-social-login";
 import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
 import {SharedModule} from "../shared/shared.module";
-import { OtpInputComponent } from './components/otp-input/otp-input.component';
+import { OtpFormComponent } from './forms/otp-form/otp-form.component';
 import { AuthFormComponent } from './forms/auth-form/auth-form.component';
 import { MoreInfoFormComponent } from './forms/more-info-form/more-info-form.component';
 import { ActivationFormComponent } from './forms/activation-form/activation-form.component';
+import { LoginFormComponent } from './forms/login-form/login-form.component';
+import { ConfirmationMethodFormComponent } from './forms/confirmation-method-form/confirmation-method-form.component';
 
 
 @NgModule({
@@ -24,10 +26,12 @@ import { ActivationFormComponent } from './forms/activation-form/activation-form
     ReCaptchaValueAccessorDirective,
     LoginComponent,
     RegisterComponent,
-    OtpInputComponent,
+    OtpFormComponent,
     AuthFormComponent,
     MoreInfoFormComponent,
-    ActivationFormComponent
+    ActivationFormComponent,
+    LoginFormComponent,
+    ConfirmationMethodFormComponent
   ],
   imports: [
     CommonModule,

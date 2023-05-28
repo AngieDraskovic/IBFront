@@ -15,20 +15,20 @@ export class AuthInterceptor implements HttpInterceptor {
               private router: Router) {}
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    const currentUser = this.authService.currentUserValue;
-    const isLoggedIn = currentUser && currentUser.token;
+    let authToken = this.authService.getToken();
 
-    if (isLoggedIn) {
-      if (this.authService.isTokenExpired()) {
-        this.authService.logout();
-        this.router.navigate(['/login-register']);
-        return EMPTY;
-      } else {
-        request = this.addToken(request, currentUser.token);
-      }
+    if (authToken && this.authService.isTokenExpired(authToken)) {
+      this.authService.logout();
+      this.router.navigate(['/login']);
+      return EMPTY;
     }
 
-    return next.handle(request).pipe(
+    let authReq = request;
+    if (authToken) {
+      authReq = this.addToken(request, authToken);
+    }
+
+    return next.handle(authReq).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           this.authService.logout();
@@ -40,7 +40,7 @@ export class AuthInterceptor implements HttpInterceptor {
     );
   }
 
-  private addToken(request: HttpRequest<any>, token: string) {
+  private addToken(request: HttpRequest<any>, token: string | null) {
     return request.clone({
       setHeaders: {
         'Authorization': `Bearer ${token}`

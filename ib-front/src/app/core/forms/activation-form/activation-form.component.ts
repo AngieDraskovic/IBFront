@@ -4,6 +4,7 @@ import {AuthService} from "../../services/auth.service";
 import {NotificationService} from "../../services/notification.service";
 import {anonymizeEmail, anonymizePhoneNumber} from "../../../shared/utilities/anonymizer.util";
 import {LoadingService} from "../../services/loading.service";
+import {UserService} from "../../services/user.service";
 
 @Component({
   selector: 'app-activation-form',
@@ -21,6 +22,7 @@ export class ActivationFormComponent implements OnInit {
   confirmationMessage!: string;
 
   constructor(private authService: AuthService,
+              private userService: UserService,
               private loadingService: LoadingService,
               private notificationService: NotificationService) {
   }
@@ -48,7 +50,7 @@ export class ActivationFormComponent implements OnInit {
     }
 
     this.loadingService.show();
-    this.authService.activateUser(this.activationForm.controls['code'].value ?? '').subscribe({
+    this.userService.activateUserAccount(this.activationForm.controls['code'].value ?? '').subscribe({
       next: () => {
         this.loadingService.hide();
         this.onActivated.emit();

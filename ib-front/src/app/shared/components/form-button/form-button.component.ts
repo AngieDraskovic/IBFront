@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {FormGroup} from "@angular/forms";
+import {FormArray, FormGroup} from "@angular/forms";
 
 @Component({
   selector: 'app-form-button',
@@ -7,7 +7,7 @@ import {FormGroup} from "@angular/forms";
   styleUrls: ['./form-button.component.css']
 })
 export class FormButtonComponent implements OnInit {
-  @Input() formGroup!: FormGroup;
+  @Input() form!: FormGroup | FormArray;
   @Input() buttonText!: string;
   @Output() onSubmit = new EventEmitter<void>();
 
@@ -18,7 +18,7 @@ export class FormButtonComponent implements OnInit {
   }
 
   submitForm() {
-    if (this.formGroup.valid) {
+    if (this.form.valid) {
       this.onSubmit.emit();
     }
   }

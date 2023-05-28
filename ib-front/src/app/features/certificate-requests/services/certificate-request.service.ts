@@ -4,7 +4,7 @@ import {HttpClient} from "@angular/common/http";
 import {CertificateRequest} from "../models/certificate-request";
 import {catchError, forkJoin, map, Observable, of, switchMap} from "rxjs";
 import {CertificateRequestStatus} from "../enums/certificate-request-status.enum";
-import {handleSharedError} from "../../../shared/utilities/shared-error-handler.util";
+import {handleSharedError} from "../../../core/utilities/shared-error-handler.util";
 import {CreateCertificateRequestDTO} from "../models/create-certificate-request-dto";
 import {format} from "date-fns";
 import {CertificateService} from "../../certificates/services/certificate.service";

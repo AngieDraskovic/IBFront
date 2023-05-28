@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnInit, ViewChild} from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {AuthService} from "../../services/auth.service";
 import {NgToastService} from "ng-angular-popup";
@@ -8,6 +8,30 @@ import {UserRoleEnum} from "../../enums/user-role.enum";
 import {CustomError} from "../../models/custom-error";
 import {SocialAuthService, SocialUser} from "@abacritt/angularx-social-login";
 import {OauthToken} from "../../models/oauth-token";
+import {NotificationService} from "../../services/notification.service";
+import {LoadingService} from "../../services/loading.service";
+import {TwoFactorAuthService} from "../../services/two-factor-auth.service";
+import {TwoFAMethodRequest} from "../../models/two-fa-method-request";
+import {VerificationRequest} from "../../models/verification-request";
+import {LoginResponse} from "../../models/login-response";
+import {animate, query, style, transition, trigger} from "@angular/animations";
+import {AuthFormComponent} from "../../forms/auth-form/auth-form.component";
+import {MoreInfoFormComponent} from "../../forms/more-info-form/more-info-form.component";
+import {ActivationFormComponent} from "../../forms/activation-form/activation-form.component";
+import {LoginFormComponent} from "../../forms/login-form/login-form.component";
+import {ConfirmationMethodFormComponent} from "../../forms/confirmation-method-form/confirmation-method-form.component";
+import {OtpFormComponent} from "../../forms/otp-form/otp-form.component";
+
+enum LoginStep {
+  LoginForm,
+  ConfirmationMethodForm,
+  OTPForm
+}
+
+enum AnimationType {
+  SLIDE_IN_LEFT = "slide-in-left",
+  SLIDE_IN_RIGHT = "slide-in-right"
+}
 
 @Component({
   selector: 'app-login',
@@ -15,91 +39,132 @@ import {OauthToken} from "../../models/oauth-token";
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
-  loginForm = new FormGroup({
-    email: new FormControl('', [Validators.email, Validators.required]),
-    password: new FormControl('', [Validators.required]),
-    recaptcha: new FormControl('', [Validators.required])
-  });
+  protected readonly LoginStep = LoginStep;
+  @ViewChild(LoginFormComponent) loginForm!: LoginFormComponent;
+  @ViewChild(ConfirmationMethodFormComponent) confirmationMethodForm!: ConfirmationMethodFormComponent;
+  @ViewChild(OtpFormComponent) otpForm!: OtpFormComponent;
 
-  @Input() siteKey: string = '';
-  recaptchaToken: string = '';
+  currentStep: LoginStep = LoginStep.LoginForm;
+  animationType: AnimationType = AnimationType.SLIDE_IN_RIGHT;
 
-  constructor(private authService: AuthService,
-              private socialAuthService: SocialAuthService,
-              private toastService: NgToastService,
-              private router: Router) {
+  userEmail?: string;
+  temporaryToken?: string;
+
+  constructor(private router: Router,
+              public loadingService: LoadingService,
+              private authService: AuthService,
+              private twoFactorAuthService: TwoFactorAuthService,
+              private notificationService: NotificationService) {
   }
 
   ngOnInit(): void {
-    this.socialAuthService.authState.subscribe((user) => {
-      if (user != null) {
-        this.loginWithGoogle(user);
+  }
+
+  handleLoginFormSubmit(credentials: Credentials) {
+    this.loadingService.show();
+
+    this.authService.login(credentials).subscribe({
+      next: (loginResponse: LoginResponse) => {
+        this.loginForm.reset();
+        this.loadingService.hide();
+
+        this.userEmail = credentials.email;
+        this.temporaryToken = loginResponse.temporaryToken;
+
+        this.nextStep()
+      },
+      error: (error: CustomError) => {
+        this.loadingService.hide();
+
+        if (error.status == 401 || error.status == 403) {
+          this.notificationService.showWarning("Warning", error.message, 'tr');
+        } else {
+          this.notificationService.showDefaultError('tr');
+        }
       }
     });
   }
 
-  login() {
-    if (this.loginForm.invalid) {
+  handleConfirmationMethodFormSubmit(method: string) {
+    if (this.userEmail == null) {
       return;
     }
 
-    const credentials: Credentials = {
-      email: this.loginForm.controls['email'].value ?? '',
-      password: this.loginForm.controls['password'].value ?? '',
-      recaptchaToken: this.recaptchaToken
-    };
+    const twoFaMethodRequest: TwoFAMethodRequest = {
+      email: this.userEmail,
+      method: method
+    }
 
+    this.loadingService.show();
 
-    this.authService.login(credentials).subscribe({
+    this.twoFactorAuthService.select2FAMethod(twoFaMethodRequest).subscribe({
       next: () => {
-        const user = this.authService.currentUserValue;
-        if (user?.role === UserRoleEnum.Admin) {
-          this.router.navigate(['/admin']);
-        } else if (user?.role === UserRoleEnum.User) {
-          this.router.navigate(['/user']);
-        }
+        this.loadingService.hide();
+
+        this.nextStep()
       },
-      error: (error: CustomError) => {
-        this.toastService.error({
-          detail: "Error",
-          summary: error.message,
-          duration: 5000
-        });
+      error: () => {
+        this.loadingService.hide();
+        this.notificationService.showDefaultError('tr');
       }
     });
   }
 
-  loginWithGoogle(user: SocialUser) {
-    const oauthToken: OauthToken = {token: user.idToken};
-    this.authService.loginWithGoogle(oauthToken).subscribe({
-        next: () => {
-          const user = this.authService.currentUserValue;
-          if (user?.role === UserRoleEnum.Admin) {
-            this.router.navigate(['/admin']);
-          } else if (user?.role === UserRoleEnum.User) {
-            this.router.navigate(['/user']);
-          }
-        },
-        error: (error: CustomError) => {
-          if (error.status == 401 || error.status == 403) {
-            this.toastService.warning({
-              detail: "Warning",
-              summary: error.message,
-              duration: 5000
-            });
-          } else {
-            this.toastService.error({
-              detail: "Error",
-              summary: "Something went wrong.",
-              duration: 5000
-            });
-          }
+  handleOTPFormSubmit(otp: string) {
+    if (this.userEmail == null || this.temporaryToken == null) {
+      return;
+    }
+
+    const verificationRequest: VerificationRequest = {
+      email: this.userEmail,
+      code: otp,
+      temporaryToken: this.temporaryToken
+    }
+
+    this.loadingService.show();
+
+    this.twoFactorAuthService.verify2FA(verificationRequest).subscribe({
+      next: (authToken) => {
+        this.loadingService.hide();
+
+        this.authService.handleAuthResponse(authToken);
+        if (this.authService.getUserRole() === UserRoleEnum.Admin) {
+          this.router.navigate(['/admin']);
+        } else if (this.authService.getUserRole() === UserRoleEnum.User) {
+          this.router.navigate(['/user']);
         }
+      },
+      error: (error) => {
+        this.loadingService.hide();
+        this.notificationService.showDefaultError('tr');
       }
-    );
+    });
   }
 
-  handleRecaptchaResponse(response: string) {
-    this.recaptchaToken = response;
+  nextStep() {
+    this.animationType = AnimationType.SLIDE_IN_RIGHT;
+    switch (this.currentStep) {
+      case LoginStep.LoginForm:
+        this.currentStep = LoginStep.ConfirmationMethodForm;
+        break;
+      case LoginStep.ConfirmationMethodForm:
+        this.currentStep = LoginStep.OTPForm;
+        break;
+    }
+  }
+
+  onBack() {
+    this.animationType = AnimationType.SLIDE_IN_LEFT;
+
+    switch (this.currentStep) {
+      case LoginStep.ConfirmationMethodForm:
+        this.userEmail = undefined;
+        this.temporaryToken = undefined;
+        this.currentStep = LoginStep.LoginForm;
+        break;
+      case LoginStep.OTPForm:
+        this.currentStep = LoginStep.ConfirmationMethodForm;
+        break;
+    }
   }
 }

@@ -17,6 +17,26 @@ form {
   width: 100%;
 }
 
+.social-text {
+  padding: 0.7rem 0;
+  font-size: 1rem;
+}
+
+.captcha {
+  margin-top: 12px;
+  margin-bottom: 12px;
+}
+
+.social-media {
+  display: flex;
+  justify-content: center;
+}
+
+.social-icon:hover {
+  color: #4481eb;
+  border-color: #4481eb;
+}
+
 @media (max-width: 570px) {
   form {
     padding: 0 1.5rem;

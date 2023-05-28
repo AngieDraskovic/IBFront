@@ -37,10 +37,10 @@ export class CreateCertificateRequestDialogComponent implements OnInit {
   }
 
   fetchOptions(): void {
-    if (this.authService.currentUserValue?.role == UserRoleEnum.User) {
+    if (this.authService.getUserRole() == UserRoleEnum.User) {
       this.options = [CertificateType.INTERMEDIATE, CertificateType.END];
       this.selectedOption = this.options[0];
-    } else if (this.authService.currentUserValue?.role == UserRoleEnum.Admin) {
+    } else if (this.authService.getUserRole() == UserRoleEnum.Admin) {
       this.options = [CertificateType.ROOT, CertificateType.INTERMEDIATE, CertificateType.END];
       this.selectedOption = this.options[0];
     }
@@ -98,7 +98,7 @@ export class CreateCertificateRequestDialogComponent implements OnInit {
       validTo: formattedDate
     }
 
-    if (this.authService.currentUserValue?.role == UserRoleEnum.Admin) {
+    if (this.authService.getUserRole() == UserRoleEnum.Admin) {
       this.certificateRequestService.createAdminCertificateRequest(createCertificateRequestDTO).subscribe({
         next: () => {
           this.dialogRef.close(true);
@@ -108,7 +108,7 @@ export class CreateCertificateRequestDialogComponent implements OnInit {
           this.error = error.message
         }
       })
-    } else if (this.authService.currentUserValue?.role == UserRoleEnum.User) {
+    } else if (this.authService.getUserRole() == UserRoleEnum.User) {
       this.certificateRequestService.createUserCertificateRequest(createCertificateRequestDTO).subscribe({
         next: () => {
           this.dialogRef.close(true);

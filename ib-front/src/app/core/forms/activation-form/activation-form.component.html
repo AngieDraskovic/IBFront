@@ -9,6 +9,7 @@
   </p>
 
   <app-form-field
+    class="input"
     [formGroup]="activationForm"
     [controlName]="'code'"
     [type]="'text'"
@@ -18,7 +19,7 @@
   </app-form-field>
 
   <app-form-button
-    [formGroup]="activationForm"
+    [form]="activationForm"
     [buttonText]="'ACTIVATE'"
     (onSubmit)="activate()">
   </app-form-button>

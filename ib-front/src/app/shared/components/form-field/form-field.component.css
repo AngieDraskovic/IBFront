@@ -1,6 +1,6 @@
 .input-field {
   display: grid;
-  grid-template-columns: 48px auto;
+  grid-template-columns: 48px 1fr;
   height: 55px;
   padding: 0 0.4rem;
   margin: 16px 0;
@@ -18,6 +18,10 @@
   color: #acacac;
   transition: 0.5s;
   font-size: 1.1rem;
+}
+
+.input-field input {
+  width: 100%;
 }
 
 .input-field input::placeholder {

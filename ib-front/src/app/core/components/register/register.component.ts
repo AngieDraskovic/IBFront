@@ -6,6 +6,7 @@ import {AuthFormComponent} from "../../forms/auth-form/auth-form.component";
 import {MoreInfoFormComponent} from "../../forms/more-info-form/more-info-form.component";
 import {ActivationFormComponent} from "../../forms/activation-form/activation-form.component";
 import {LoadingService} from "../../services/loading.service";
+import {RegistrationService} from "../../services/registration.service";
 
 enum RegisterStep {
   AuthForm,
@@ -30,12 +31,13 @@ export class RegisterComponent implements OnInit {
   @ViewChild(ActivationFormComponent) activationForm!: ActivationFormComponent;
 
   currentStep: RegisterStep = RegisterStep.AuthForm;
-  animationType: AnimationType = AnimationType.SLIDE_IN_LEFT;
+  animationType: AnimationType = AnimationType.SLIDE_IN_RIGHT;
 
   authData: { email: string, password: string } | undefined;
   confirmationData: { confirmationMethod: 'Email' | 'SMS', contactDetail: string } | undefined;
 
   constructor(private authService: AuthService,
+              private registrationService: RegistrationService,
               public loadingService: LoadingService,
               private notificationService: NotificationService) {
   }
@@ -73,7 +75,7 @@ export class RegisterComponent implements OnInit {
     }
 
     this.loadingService.show();
-    this.authService.register(completeData, completeData.confirmationMethod).subscribe({
+    this.registrationService.register(completeData, completeData.confirmationMethod).subscribe({
       next: () => {
         this.loadingService.hide();
         this.authData = undefined;

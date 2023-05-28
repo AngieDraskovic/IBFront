@@ -6,6 +6,7 @@ import {AuthService} from "../../services/auth.service";
 import {NotificationService} from "../../services/notification.service";
 import {RegistrationData} from "../../models/registration-data";
 import {LoadingService} from "../../services/loading.service";
+import {UserService} from "../../services/user.service";
 
 @Component({
   selector: 'app-auth-form',
@@ -22,6 +23,7 @@ export class AuthFormComponent implements OnInit {
   @Output() formCompleted = new EventEmitter<{ email: string, password: string }>();
 
   constructor(private authService: AuthService,
+              private userService: UserService,
               private loadingService: LoadingService,
               private notificationService: NotificationService) {
   }
@@ -41,7 +43,7 @@ export class AuthFormComponent implements OnInit {
     }
 
     this.loadingService.show();
-    this.authService.checkEmail(email).subscribe(
+    this.userService.doesEmailExist(email).subscribe(
       {
         next: (emailExists) => {
           this.loadingService.hide();

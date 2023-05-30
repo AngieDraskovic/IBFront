@@ -2,15 +2,26 @@
   class="step"
   [ngClass]="animationType + (currentStep === LoginStep.LoginForm ? ' active' : '')"
   (onBack)="onBack()"
-  (onLoginSubmit)="handleLoginFormSubmit($event)"
+  (onLoginSubmit)="nextStep()"
+  (renewPasswordRequired)="navigateToRenewPassword()"
+  (onResetPassword)="navigateToResetPassword()"
 >
 </app-login-form>
+
+<app-renew-password-form
+  class="step"
+  [ngClass]="animationType + (currentStep === LoginStep.RenewPasswordForm ? ' active' : '')"
+  (onRenewSubmit)="nextStep()"
+  (onBack)="onBack()"
+>
+
+</app-renew-password-form>
 
 <app-confirmation-method-form
   class="step"
   [ngClass]="animationType + (currentStep === LoginStep.ConfirmationMethodForm ? ' active' : '')"
   (onBack)="onBack()"
-  (onConfirmationMethodSubmit)="handleConfirmationMethodFormSubmit($event)"
+  (onConfirmationMethodSubmit)="nextStep()"
 >
 
 </app-confirmation-method-form>
@@ -19,10 +30,19 @@
   class="step"
   [ngClass]="animationType + (currentStep === LoginStep.OTPForm ? ' active' : '')"
   (onBack)="onBack()"
-  (onOtpSubmit)="handleOTPFormSubmit($event)"
+  (onOtpSubmit)="nextStep()"
 >
 
 </app-otp-form>
+
+<app-reset-password-form
+  class="step"
+  [ngClass]="animationType + (currentStep === LoginStep.ResetPasswordForm ? ' active' : '')"
+  (onBack)="onBack()"
+  (onResetSubmit)="nextStep()"
+>
+
+</app-reset-password-form>
 
 <app-spinner *ngIf="loadingService.isLoading | async"></app-spinner>
 

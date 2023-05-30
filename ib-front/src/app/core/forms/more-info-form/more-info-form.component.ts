@@ -1,8 +1,10 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, OnDestroy, OnInit, Output} from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
+import {SharedDataService} from "../../services/shared-data.service";
+import {Subject, takeUntil} from "rxjs";
 import {RegistrationData} from "../../models/registration-data";
-import {Home} from "../../components/home/home";
-import {AuthService} from "../../services/auth.service";
+import {RegistrationService} from "../../services/registration.service";
+import {LoadingService} from "../../services/loading.service";
 import {NotificationService} from "../../services/notification.service";
 
 @Component({
@@ -10,7 +12,9 @@ import {NotificationService} from "../../services/notification.service";
   templateUrl: './more-info-form.component.html',
   styleUrls: ['./more-info-form.component.css']
 })
-export class MoreInfoFormComponent implements OnInit {
+export class MoreInfoFormComponent implements OnInit, OnDestroy {
+  private destroy$ = new Subject<void>();
+
   siteKey = '6Le54BwmAAAAAO5Wppw-q7bP4I1rKwZoZ1c_fWyV';
   recaptchaToken: string = '';
 
@@ -25,40 +29,77 @@ export class MoreInfoFormComponent implements OnInit {
     recaptcha: new FormControl('', [Validators.required])
   }, {});
 
-  @Output() formCompleted = new EventEmitter<any>();
-  @Output() goBack = new EventEmitter<void>();
+  @Output() onMoreInfoSubmit = new EventEmitter<void>();
+  @Output() onBack = new EventEmitter<void>();
 
-  constructor() {
+  authData?: { email: string; password: string } | null;
+
+  constructor(
+    private sharedDataService: SharedDataService,
+    private registrationService: RegistrationService,
+    private loadingService: LoadingService,
+    private notificationService: NotificationService) {
   }
 
   ngOnInit(): void {
-  }
-
-  register() {
-    if (this.moreInfoForm.invalid) {
-      return;
-    }
-
-    const registrationData = {
-      name: this.moreInfoForm.controls['name'].value ?? '',
-      surname: this.moreInfoForm.controls['surname'].value ?? '',
-      telephoneNumber: this.moreInfoForm.controls['telephoneNumber'].value ?? '',
-      confirmationMethod: this.moreInfoForm.controls['confirmationMethod'].value ?? '',
-      recaptchaToken: this.recaptchaToken
-    }
-
-    this.formCompleted.emit(registrationData);
+    this.sharedDataService.authData$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(data => {
+        this.authData = data;
+      });
   }
 
   handleRecaptchaResponse(response: string) {
     this.recaptchaToken = response;
   }
 
-  onBack() {
-    this.goBack.emit();
+  onFormSubmit() {
+    if (this.moreInfoForm.invalid || this.authData == null) {
+      return;
+    }
+
+    const registrationData: RegistrationData = {
+      email: this.authData.email,
+      password: this.authData.password,
+      name: this.moreInfoForm.controls['name'].value ?? '',
+      surname: this.moreInfoForm.controls['surname'].value ?? '',
+      telephoneNumber: this.moreInfoForm.controls['telephoneNumber'].value ?? '',
+      confirmationMethod: this.moreInfoForm.controls['confirmationMethod'].value as 'Email' | 'SMS' ?? '',
+      recaptchaToken: this.recaptchaToken
+    }
+
+    this.loadingService.show();
+    this.registrationService.register(registrationData, registrationData.confirmationMethod).subscribe({
+      next: () => {
+        this.loadingService.hide();
+        this.sharedDataService.setAuthData(null);
+
+        let contactDetails = registrationData.confirmationMethod === 'Email' ? registrationData.email : registrationData.telephoneNumber;
+        this.sharedDataService.setConfirmationMethod({
+          confirmationMethod: registrationData.confirmationMethod,
+          contactDetail: contactDetails
+        })
+
+        this.onMoreInfoSubmit.emit();
+      },
+      error: () => {
+        this.loadingService.hide();
+        this.notificationService.showDefaultError('tl');
+      }
+    });
+  }
+
+  navigateBack() {
+    this.onBack.emit();
+    this.reset();
   }
 
   reset() {
     this.moreInfoForm.reset();
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

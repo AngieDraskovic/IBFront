@@ -18,6 +18,8 @@ import { MoreInfoFormComponent } from './forms/more-info-form/more-info-form.com
 import { ActivationFormComponent } from './forms/activation-form/activation-form.component';
 import { LoginFormComponent } from './forms/login-form/login-form.component';
 import { ConfirmationMethodFormComponent } from './forms/confirmation-method-form/confirmation-method-form.component';
+import { RenewPasswordFormComponent } from './forms/renew-password-form/renew-password-form.component';
+import { ResetPasswordFormComponent } from './forms/reset-password-form/reset-password-form.component';
 
 
 @NgModule({
@@ -31,7 +33,9 @@ import { ConfirmationMethodFormComponent } from './forms/confirmation-method-for
     MoreInfoFormComponent,
     ActivationFormComponent,
     LoginFormComponent,
-    ConfirmationMethodFormComponent
+    ConfirmationMethodFormComponent,
+    RenewPasswordFormComponent,
+    ResetPasswordFormComponent
   ],
   imports: [
     CommonModule,

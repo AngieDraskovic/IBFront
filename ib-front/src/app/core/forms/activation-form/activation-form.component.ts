@@ -5,6 +5,10 @@ import {NotificationService} from "../../services/notification.service";
 import {anonymizeEmail, anonymizePhoneNumber} from "../../../shared/utilities/anonymizer.util";
 import {LoadingService} from "../../services/loading.service";
 import {UserService} from "../../services/user.service";
+import {SharedDataService} from "../../services/shared-data.service";
+import {RegistrationService} from "../../services/registration.service";
+import {Subject, takeUntil} from "rxjs";
+import {CustomError} from "../../models/custom-error";
 
 @Component({
   selector: 'app-activation-form',
@@ -12,26 +16,37 @@ import {UserService} from "../../services/user.service";
   styleUrls: ['./activation-form.component.css']
 })
 export class ActivationFormComponent implements OnInit {
+  private destroy$ = new Subject<void>();
+
   activationForm = new FormGroup({
     code: new FormControl('', [Validators.required])
   }, {});
 
-  @Input() confirmationData: { confirmationMethod: 'Email' | 'SMS', contactDetail: string } | undefined;
-  @Output() onActivated = new EventEmitter<any>();
+  confirmationData?: { confirmationMethod: 'Email' | 'SMS', contactDetail: string } | null;
+  @Output() onBack = new EventEmitter<void>();
+  @Output() onActivationSubmit = new EventEmitter<void>();
   anonymizedContact!: string;
   confirmationMessage!: string;
 
-  constructor(private authService: AuthService,
-              private userService: UserService,
-              private loadingService: LoadingService,
-              private notificationService: NotificationService) {
+  constructor(
+    private sharedDataService: SharedDataService,
+    private userService: UserService,
+    private loadingService: LoadingService,
+    private notificationService: NotificationService) {
   }
 
   ngOnInit(): void {
+    this.sharedDataService.confirmationMethod$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(data => {
+        this.confirmationData = data;
+        this.updateView()
+      });
   }
 
   updateView() {
     if (this.confirmationData == null) {
+      this.confirmationMessage = "To proceed with the activation, please enter the verification code that was sent to you";
       return;
     }
 
@@ -44,7 +59,7 @@ export class ActivationFormComponent implements OnInit {
     }
   }
 
-  activate() {
+  onFormSubmit() {
     if (this.activationForm.invalid) {
       return;
     }
@@ -53,7 +68,10 @@ export class ActivationFormComponent implements OnInit {
     this.userService.activateUserAccount(this.activationForm.controls['code'].value ?? '').subscribe({
       next: () => {
         this.loadingService.hide();
-        this.onActivated.emit();
+
+        this.reset();
+        this.sharedDataService.setAuthData(null);
+        this.onActivationSubmit.emit();
 
         setTimeout(() => {
           this.notificationService.showSuccess(
@@ -62,11 +80,23 @@ export class ActivationFormComponent implements OnInit {
             'tl');
         }, 1000);
       },
-      error: () => {
+      error: (error: CustomError) => {
         this.loadingService.hide();
-        this.notificationService.showDefaultError('tl');
+        if (error.status == 400) {
+          this.notificationService.showWarning(
+            "Invalid code",
+            "The code you entered is invalid",
+            'tl');
+        } else {
+          this.notificationService.showDefaultError('tl');
+        }
       }
     });
+  }
+
+  navigateBack() {
+    this.onBack.emit();
+    this.reset();
   }
 
   reset() {

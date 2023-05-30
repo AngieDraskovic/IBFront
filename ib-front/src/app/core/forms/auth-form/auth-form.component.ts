@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {match} from "../../../shared/utilities/match.validator";
 import {CustomError} from "../../models/custom-error";
@@ -7,66 +7,80 @@ import {NotificationService} from "../../services/notification.service";
 import {RegistrationData} from "../../models/registration-data";
 import {LoadingService} from "../../services/loading.service";
 import {UserService} from "../../services/user.service";
+import {Credentials} from "../../models/credentials";
+import {Subject, takeUntil} from "rxjs";
+import {SharedDataService} from "../../services/shared-data.service";
 
 @Component({
   selector: 'app-auth-form',
   templateUrl: './auth-form.component.html',
   styleUrls: ['./auth-form.component.css']
 })
-export class AuthFormComponent implements OnInit {
+export class AuthFormComponent implements OnInit, OnDestroy {
+  private destroy$ = new Subject<void>();
+
   authForm = new FormGroup({
     email: new FormControl('', [Validators.required, Validators.email]),
     password: new FormControl('', [Validators.required, Validators.minLength(6)]),
     confirmPassword: new FormControl('', [Validators.required,])
   }, {validators: [match('password', 'confirmPassword')]});
 
-  @Output() formCompleted = new EventEmitter<{ email: string, password: string }>();
+  @Output() onAuthSubmit = new EventEmitter<void>();
+  @Output() accountActivationNavigate = new EventEmitter<void>();
 
-  constructor(private authService: AuthService,
+
+  constructor(private loadingService: LoadingService,
               private userService: UserService,
-              private loadingService: LoadingService,
+              private sharedService: SharedDataService,
               private notificationService: NotificationService) {
   }
 
   ngOnInit(): void {
   }
 
-  onSubmit(): void {
-    if (this.authForm.valid) {
-      this.checkEmailExistsAndProceed(this.authForm.value['email'])
+  onFormSubmit() {
+    if (this.authForm.invalid) {
+      return
     }
-  }
 
-  checkEmailExistsAndProceed(email: string | null | undefined) {
-    if (email == null) {
-      return;
+    const authData = {
+      email: this.authForm.controls['email'].value ?? '',
+      password: this.authForm.controls['password'].value ?? '',
     }
 
     this.loadingService.show();
-    this.userService.doesEmailExist(email).subscribe(
-      {
-        next: (emailExists) => {
-          this.loadingService.hide();
+    this.userService.doesEmailExist(authData.email)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(
+        {
+          next: (emailExists) => {
+            this.loadingService.hide();
 
-          if (emailExists) {
-            this.notificationService.showWarning("Email taken", "Email already in use", "tl");
-          } else {
-            const authData: { email: string, password: string } = {
-              email: this.authForm.value['email']!,
-              password: this.authForm.value['password']!
+            if (emailExists) {
+              this.notificationService.showWarning("Email taken", "Email already in use", "tl");
+            } else {
+              this.sharedService.setAuthData(authData);
+              this.onAuthSubmit.emit();
             }
-            this.formCompleted.emit(authData);
+          },
+          error: () => {
+            this.loadingService.hide();
+            this.notificationService.showDefaultError('tl');
           }
-        },
-        error: () => {
-          this.loadingService.hide();
-          this.notificationService.showDefaultError('tl');
         }
-      }
-    );
+      );
+  }
+
+  navigateOnAccountActivation() {
+    this.accountActivationNavigate.emit();
   }
 
   reset() {
     this.authForm.reset();
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

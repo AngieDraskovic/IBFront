@@ -24,6 +24,15 @@
     [placeholder]="'Password'">
   </app-form-field>
 
+  <p class="reset-password"
+  >
+    <span
+      (click)="forgotPassword()"
+    >
+    Forgot Password?
+    </span>
+  </p>
+
   <re-captcha
     #recaptchaElement
     class="captcha"

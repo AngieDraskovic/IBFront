@@ -37,6 +37,19 @@ form {
   border-color: #4481eb;
 }
 
+.reset-password {
+  width: 100%;
+  text-align: right;
+  color: var(--text-color);
+  font-weight: 450;
+  margin-bottom: 10px;
+}
+
+.reset-password span:hover {
+  color: var(--blue);
+  cursor: pointer;
+}
+
 @media (max-width: 570px) {
   form {
     padding: 0 1.5rem;

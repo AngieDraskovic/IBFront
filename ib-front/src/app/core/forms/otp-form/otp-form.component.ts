@@ -1,7 +1,7 @@
 import {
   AfterViewInit,
   Component,
-  ElementRef, EventEmitter, Input, isDevMode, Output,
+  ElementRef, EventEmitter, Input, isDevMode, OnInit, Output,
   QueryList,
   ViewChildren
 } from '@angular/core';
@@ -14,6 +14,17 @@ import {
   NG_VALUE_ACCESSOR, ValidationErrors,
   Validator, Validators
 } from "@angular/forms";
+import {VerificationRequest} from "../../models/verification-request";
+import {UserRoleEnum} from "../../enums/user-role.enum";
+import {Subject, takeUntil} from "rxjs";
+import {SharedDataService} from "../../services/shared-data.service";
+import {LoginData} from "../../models/login-data";
+import {LoadingService} from "../../services/loading.service";
+import {TwoFactorAuthService} from "../../services/two-factor-auth.service";
+import {AuthService} from "../../services/auth.service";
+import {NotificationService} from "../../services/notification.service";
+import {Route, Router} from "@angular/router";
+import {CustomError} from "../../models/custom-error";
 
 function getFormArray(size: number): FormArray {
   const arr = [];
@@ -42,15 +53,17 @@ function getFormArray(size: number): FormArray {
     },
   ],
 })
-export class OtpFormComponent implements AfterViewInit, ControlValueAccessor, Validator {
+export class OtpFormComponent implements OnInit, AfterViewInit, ControlValueAccessor, Validator {
+  private destroy$ = new Subject<void>();
+
   @Input()
   set size(size: number) {
     this.inputs = getFormArray(size);
     this.#size = size;
   }
 
-  @Output() onBack = new EventEmitter<any>();
-  @Output() onOtpSubmit = new EventEmitter<string>();
+  @Output() onBack = new EventEmitter<void>();
+  @Output() onOtpSubmit = new EventEmitter<void>();
 
   @ViewChildren('inputEl') inputEls!: QueryList<ElementRef<HTMLInputElement>>;
 
@@ -62,7 +75,24 @@ export class OtpFormComponent implements AfterViewInit, ControlValueAccessor, Va
   onChange?: (value: string) => void;
   onTouched?: () => void;
 
-  constructor() {
+  loginData?: LoginData | null;
+
+  constructor(
+    private sharedDataService: SharedDataService,
+    private loadingService: LoadingService,
+    private twoFactorAuthService: TwoFactorAuthService,
+    private authService: AuthService,
+    private notificationService: NotificationService,
+    private router: Router
+  ) {
+  }
+
+  ngOnInit() {
+    this.sharedDataService.loginData$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(data => {
+        this.loginData = data;
+      });
   }
 
   ngAfterViewInit(): void {
@@ -199,7 +229,34 @@ export class OtpFormComponent implements AfterViewInit, ControlValueAccessor, Va
   }
 
   onFormSubmit() {
-    this.onOtpSubmit.emit(this.inputs.value.join(''));
+    const verificationRequest: VerificationRequest = {
+      email: this.loginData?.email ?? '',
+      code: this.inputs.value.join(''),
+      temporaryToken: this.loginData?.temporaryToken ?? ''
+    }
+
+    this.loadingService.show();
+
+    this.twoFactorAuthService.verify2FA(verificationRequest).subscribe({
+      next: (authToken) => {
+        this.loadingService.hide();
+
+        this.authService.handleAuthResponse(authToken);
+        if (this.authService.getUserRole() === UserRoleEnum.Admin) {
+          this.router.navigate(['/admin']);
+        } else if (this.authService.getUserRole() === UserRoleEnum.User) {
+          this.router.navigate(['/user']);
+        }
+      },
+      error: (error: CustomError) => {
+        this.loadingService.hide();
+        if (error.status == 404) {
+          this.notificationService.showWarning('Invalid code', 'The code you entered is invalid.', 'tr');
+        } else {
+          this.notificationService.showDefaultError('tr');
+        }
+      }
+    });
   }
 
   reset() {

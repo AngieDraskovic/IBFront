@@ -1,23 +1,24 @@
 <app-auth-form
   class="step"
   [ngClass]="animationType + (currentStep === RegisterStep.AuthForm ? ' active' : '')"
-  (formCompleted)="nextStep($event)"
+  (onAuthSubmit)="nextStep()"
+  (accountActivationNavigate)="accountActivationNavigate()"
 >
 </app-auth-form>
 
 <app-more-info-form
   class="step"
   [ngClass]="animationType + (currentStep === RegisterStep.MoreInfoForm ? ' active' : '')"
-  (formCompleted)="formCompleted($event)"
-  (goBack)="previousStep()"
+  (onMoreInfoSubmit)="nextStep()"
+  (onBack)="onBack()"
 >
 </app-more-info-form>
 
 <app-activation-form
   class="step"
   [ngClass]="animationType + (currentStep === RegisterStep.AccountActivationForm ? ' active' : '')"
-  (onActivated)="reset()"
-  [confirmationData]="confirmationData"
+  (onActivationSubmit)="nextStep()"
+  (onBack)="onBack()"
 >
 </app-activation-form>
 

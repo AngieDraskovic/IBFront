@@ -36,9 +36,17 @@
   >
   </app-form-field>
 
+  <p class="activate-account">
+    <span
+      (click)="navigateOnAccountActivation()"
+    >
+    Activate Account
+    </span>
+  </p>
+
   <app-form-button
     [form]="authForm"
     [buttonText]="'CONTINUE'"
-    (onSubmit)="onSubmit()">
+    (onSubmit)="onFormSubmit()">
   </app-form-button>
 </form>

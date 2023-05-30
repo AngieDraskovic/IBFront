@@ -24,6 +24,8 @@ import {OtpFormComponent} from "../../forms/otp-form/otp-form.component";
 
 enum LoginStep {
   LoginForm,
+  ResetPasswordForm,
+  RenewPasswordForm,
   ConfirmationMethodForm,
   OTPForm
 }
@@ -47,98 +49,22 @@ export class LoginComponent implements OnInit {
   currentStep: LoginStep = LoginStep.LoginForm;
   animationType: AnimationType = AnimationType.SLIDE_IN_RIGHT;
 
-  userEmail?: string;
-  temporaryToken?: string;
-
-  constructor(private router: Router,
-              public loadingService: LoadingService,
-              private authService: AuthService,
-              private twoFactorAuthService: TwoFactorAuthService,
-              private notificationService: NotificationService) {
+  constructor(public loadingService: LoadingService,) {
   }
 
   ngOnInit(): void {
   }
 
-  handleLoginFormSubmit(credentials: Credentials) {
-    this.loadingService.show();
-
-    this.authService.login(credentials).subscribe({
-      next: (loginResponse: LoginResponse) => {
-        this.loginForm.reset();
-        this.loadingService.hide();
-
-        this.userEmail = credentials.email;
-        this.temporaryToken = loginResponse.temporaryToken;
-
-        this.nextStep()
-      },
-      error: (error: CustomError) => {
-        this.loadingService.hide();
-
-        if (error.status == 401 || error.status == 403) {
-          this.notificationService.showWarning("Warning", error.message, 'tr');
-        } else {
-          this.notificationService.showDefaultError('tr');
-        }
-      }
-    });
+  navigateToRenewPassword() {
+    this.animationType = AnimationType.SLIDE_IN_RIGHT;
+    this.loginForm.reset();
+    this.currentStep = LoginStep.RenewPasswordForm;
   }
 
-  handleConfirmationMethodFormSubmit(method: string) {
-    if (this.userEmail == null) {
-      return;
-    }
-
-    const twoFaMethodRequest: TwoFAMethodRequest = {
-      email: this.userEmail,
-      method: method
-    }
-
-    this.loadingService.show();
-
-    this.twoFactorAuthService.select2FAMethod(twoFaMethodRequest).subscribe({
-      next: () => {
-        this.loadingService.hide();
-
-        this.nextStep()
-      },
-      error: () => {
-        this.loadingService.hide();
-        this.notificationService.showDefaultError('tr');
-      }
-    });
-  }
-
-  handleOTPFormSubmit(otp: string) {
-    if (this.userEmail == null || this.temporaryToken == null) {
-      return;
-    }
-
-    const verificationRequest: VerificationRequest = {
-      email: this.userEmail,
-      code: otp,
-      temporaryToken: this.temporaryToken
-    }
-
-    this.loadingService.show();
-
-    this.twoFactorAuthService.verify2FA(verificationRequest).subscribe({
-      next: (authToken) => {
-        this.loadingService.hide();
-
-        this.authService.handleAuthResponse(authToken);
-        if (this.authService.getUserRole() === UserRoleEnum.Admin) {
-          this.router.navigate(['/admin']);
-        } else if (this.authService.getUserRole() === UserRoleEnum.User) {
-          this.router.navigate(['/user']);
-        }
-      },
-      error: (error) => {
-        this.loadingService.hide();
-        this.notificationService.showDefaultError('tr');
-      }
-    });
+  navigateToResetPassword() {
+    this.animationType = AnimationType.SLIDE_IN_RIGHT;
+    this.loginForm.reset();
+    this.currentStep = LoginStep.ResetPasswordForm;
   }
 
   nextStep() {
@@ -146,9 +72,20 @@ export class LoginComponent implements OnInit {
     switch (this.currentStep) {
       case LoginStep.LoginForm:
         this.currentStep = LoginStep.ConfirmationMethodForm;
+        this.loginForm.reset();
+        break;
+      case LoginStep.RenewPasswordForm:
+      case LoginStep.ResetPasswordForm:
+        this.currentStep = LoginStep.LoginForm;
+        this.loginForm.reset();
         break;
       case LoginStep.ConfirmationMethodForm:
         this.currentStep = LoginStep.OTPForm;
+        this.confirmationMethodForm.reset();
+        break;
+      case LoginStep.OTPForm:
+        this.currentStep = LoginStep.OTPForm;
+        this.otpForm.reset();
         break;
     }
   }
@@ -158,8 +95,10 @@ export class LoginComponent implements OnInit {
 
     switch (this.currentStep) {
       case LoginStep.ConfirmationMethodForm:
-        this.userEmail = undefined;
-        this.temporaryToken = undefined;
+        this.currentStep = LoginStep.LoginForm;
+        break;
+      case LoginStep.RenewPasswordForm:
+      case LoginStep.ResetPasswordForm:
         this.currentStep = LoginStep.LoginForm;
         break;
       case LoginStep.OTPForm:

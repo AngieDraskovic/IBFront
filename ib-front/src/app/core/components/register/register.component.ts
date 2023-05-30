@@ -1,12 +1,8 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {AuthService} from "../../services/auth.service";
-import {RegistrationData} from "../../models/registration-data";
-import {NotificationService} from "../../services/notification.service";
 import {AuthFormComponent} from "../../forms/auth-form/auth-form.component";
 import {MoreInfoFormComponent} from "../../forms/more-info-form/more-info-form.component";
 import {ActivationFormComponent} from "../../forms/activation-form/activation-form.component";
 import {LoadingService} from "../../services/loading.service";
-import {RegistrationService} from "../../services/registration.service";
 
 enum RegisterStep {
   AuthForm,
@@ -33,68 +29,46 @@ export class RegisterComponent implements OnInit {
   currentStep: RegisterStep = RegisterStep.AuthForm;
   animationType: AnimationType = AnimationType.SLIDE_IN_RIGHT;
 
-  authData: { email: string, password: string } | undefined;
-  confirmationData: { confirmationMethod: 'Email' | 'SMS', contactDetail: string } | undefined;
-
-  constructor(private authService: AuthService,
-              private registrationService: RegistrationService,
-              public loadingService: LoadingService,
-              private notificationService: NotificationService) {
+  constructor(
+    public loadingService: LoadingService) {
   }
 
   ngOnInit(): void {
   }
 
-  nextStep(data: { email: string, password: string }) {
-    this.authData = data;
+  accountActivationNavigate() {
     this.animationType = AnimationType.SLIDE_IN_RIGHT;
-    this.currentStep = RegisterStep.MoreInfoForm;
+    this.currentStep = RegisterStep.AccountActivationForm;
   }
 
-  previousStep() {
-    if (this.currentStep > RegisterStep.AuthForm) {
-      this.animationType = AnimationType.SLIDE_IN_LEFT;
-      this.currentStep--;
-    }
-  }
-
-  formCompleted(data: RegistrationData) {
-    if (this.authData == undefined) {
-      return;
-    }
-
-    const completeData: RegistrationData = {
-      ...data,
-      email: this.authData.email,
-      password: this.authData.password
-    };
-
-    this.confirmationData = {
-      confirmationMethod: completeData.confirmationMethod,
-      contactDetail: completeData.email
-    }
-
-    this.loadingService.show();
-    this.registrationService.register(completeData, completeData.confirmationMethod).subscribe({
-      next: () => {
-        this.loadingService.hide();
-        this.authData = undefined;
-        this.activationForm.updateView();
+  nextStep() {
+    this.animationType = AnimationType.SLIDE_IN_RIGHT;
+    switch (this.currentStep) {
+      case RegisterStep.AuthForm:
+        this.currentStep = RegisterStep.MoreInfoForm;
+        this.authForm.reset();
+        break;
+      case RegisterStep.MoreInfoForm:
         this.currentStep = RegisterStep.AccountActivationForm;
-      },
-      error: () => {
-        this.loadingService.hide();
-        this.notificationService.showDefaultError('tl');
-      }
-    });
+        this.moreInfoForm.reset();
+        break;
+      case RegisterStep.AccountActivationForm:
+        this.currentStep = RegisterStep.AuthForm;
+        this.activationForm.reset();
+        break;
+    }
   }
 
-  reset() {
-    this.currentStep = RegisterStep.AuthForm;
-    this.authData = undefined;
-    this.confirmationData = undefined;
-    this.authForm.reset();
-    this.moreInfoForm.reset();
-    this.activationForm.reset();
+  onBack() {
+    this.animationType = AnimationType.SLIDE_IN_LEFT;
+
+    switch (this.currentStep) {
+      case RegisterStep.MoreInfoForm:
+        this.currentStep = RegisterStep.AuthForm;
+        break;
+      case RegisterStep.AccountActivationForm:
+        this.currentStep = RegisterStep.AuthForm;
+        break;
+    }
   }
 }

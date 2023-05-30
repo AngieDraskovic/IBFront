@@ -5,11 +5,9 @@ import {CertificateService} from "../../services/certificate.service";
 import {MatDialog} from "@angular/material/dialog";
 import {NgToastService} from "ng-angular-popup";
 import {CustomError} from "../../../../core/models/custom-error";
-import {CertificateStatus} from "../../enums/certificate-status.enum";
 import {CertificateDownloadService} from "../../services/certificate-download.service";
-import {th} from "date-fns/locale";
-import {forkJoin} from "rxjs";
 import {UserRoleEnum} from "../../../../core/enums/user-role.enum";
+import {NotificationService} from "../../../../core/services/notification.service";
 
 @Component({
   selector: 'app-all-certificates-table',
@@ -28,15 +26,12 @@ export class AllCertificatesTableComponent implements OnInit {
               private certificateService: CertificateService,
               private dialog: MatDialog,
               private toastService: NgToastService,
-              private sharedService: CertificateDownloadService) {
+              private sharedService: CertificateDownloadService,
+              private notificationService: NotificationService) {
   }
 
   ngOnInit(): void {
     this.role = this.authService.getUserRole();
-  }
-
-  refresh() {
-    this.fetchAllCertificates();
   }
 
   fetchAllCertificates() {
@@ -46,7 +41,7 @@ export class AllCertificatesTableComponent implements OnInit {
         this.totalItems = response.totalElements;
       },
       error: (error: CustomError) => {
-        console.error('Error fetching certificates', error);
+        this.notificationService.showDefaultError('tr');
       }
     })
   }

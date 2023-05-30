@@ -59,14 +59,14 @@
   <div class="btn-container">
     <app-back-button
       [buttonText]="'BACK'"
-      (onBack)="onBack()">
+      (onBack)="navigateBack()">
 
     </app-back-button>
 
     <app-form-button
       [form]="moreInfoForm"
       [buttonText]="'FINISH'"
-      (onSubmit)="register()">
+      (onSubmit)="onFormSubmit()">
     </app-form-button>
   </div>
 </form>

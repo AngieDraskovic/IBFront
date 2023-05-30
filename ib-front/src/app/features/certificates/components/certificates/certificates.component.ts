@@ -1,4 +1,4 @@
-import {Component, EventEmitter, OnInit, Output, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, EventEmitter, OnInit, Output, ViewChild} from '@angular/core';
 import {CertificateService} from "../../services/certificate.service";
 import {MatDialog} from "@angular/material/dialog";
 import {
@@ -15,7 +15,7 @@ import {MyCertificatesTableComponent} from "../my-certificates-table/my-certific
   templateUrl: './certificates.component.html',
   styleUrls: ['./certificates.component.css']
 })
-export class CertificatesComponent implements OnInit {
+export class CertificatesComponent implements OnInit, AfterViewInit {
   @ViewChild('allCertificates', { static: false }) allCertificates?: AllCertificatesTableComponent;
   @ViewChild('myCertificates', { static: false }) myCertificates?: MyCertificatesTableComponent;
   @Output() myEvent: EventEmitter<any> = new EventEmitter();
@@ -30,7 +30,11 @@ export class CertificatesComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.fetchStatistics();
+    this.refresh();
+  }
+
+  ngAfterViewInit() {
+    this.refresh();
   }
 
   refresh() {

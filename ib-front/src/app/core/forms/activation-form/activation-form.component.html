@@ -18,9 +18,17 @@
   >
   </app-form-field>
 
-  <app-form-button
-    [form]="activationForm"
-    [buttonText]="'ACTIVATE'"
-    (onSubmit)="activate()">
-  </app-form-button>
+  <div class="btn-container">
+    <app-back-button
+      [buttonText]="'BACK'"
+      (onBack)="navigateBack()">
+
+    </app-back-button>
+
+    <app-form-button
+      [form]="activationForm"
+      [buttonText]="'ACTIVATE'"
+      (onSubmit)="onFormSubmit()">
+    </app-form-button>
+  </div>
 </form>

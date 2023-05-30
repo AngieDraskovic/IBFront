@@ -17,6 +17,20 @@ form {
   width: 100%;
 }
 
+.activate-account {
+  width: 100%;
+  text-align: right;
+  color: var(--text-color);
+  font-weight: 450;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+.activate-account span:hover {
+  color: var(--blue);
+  cursor: pointer;
+}
+
 @media (max-width: 570px) {
   form {
     padding: 0 1.5rem;

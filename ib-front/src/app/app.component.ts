@@ -1,7 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {AuthService} from "./core/services/auth.service";
 import {UserRoleEnum} from "./core/enums/user-role.enum";
-import {Router} from "@angular/router";
+import {NavigationStart, Router} from "@angular/router";
+import {MatDialog} from "@angular/material/dialog";
 
 @Component({
   selector: 'app-root',
@@ -12,7 +13,16 @@ export class AppComponent implements OnInit {
   title = 'ib-front';
 
   constructor(private router: Router,
-              private authService: AuthService) {
+              private authService: AuthService,
+              private dialog: MatDialog) {
+    this.router.events.subscribe(event => {
+      if (event instanceof NavigationStart && event.url === '/login-register') {
+        const dialogs = this.dialog.openDialogs;
+        for (let dialog of dialogs) {
+          dialog.close();
+        }
+      }
+    });
   }
 
   ngOnInit() {

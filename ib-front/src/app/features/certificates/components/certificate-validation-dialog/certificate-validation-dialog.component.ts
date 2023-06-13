@@ -1,6 +1,7 @@
 import {Component} from '@angular/core';
 import {CertificateService} from "../../services/certificate.service";
 import {CustomError} from "../../../../core/models/custom-error";
+import {MatDialogRef} from "@angular/material/dialog";
 
 @Component({
   selector: 'app-certificate-validation-dialog',
@@ -12,7 +13,8 @@ export class CertificateValidationDialogComponent {
   slideInLeftFirst: boolean = false;
   slideInLeftSecond: boolean = false;
 
-  constructor(private certificateService: CertificateService) {
+  constructor(private certificateService: CertificateService,
+              private matDialogRef: MatDialogRef<CertificateValidationDialogComponent>) {
   }
 
   reset(): void {
@@ -62,7 +64,11 @@ export class CertificateValidationDialogComponent {
               this.showFirst("Uploaded certificate is valid")
             },
             error: (error: CustomError) => {
-              this.showSecond("Uploaded certificate is not valid.")
+              if (error.status == 401) {
+                this.matDialogRef.close();
+              } else {
+                this.showSecond("Uploaded certificate is not valid.")
+              }
             }
           });
         } else {

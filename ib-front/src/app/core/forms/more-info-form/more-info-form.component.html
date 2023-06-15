@@ -10,7 +10,8 @@
         [icon]="'fas fa-user'"
         [placeholder]="'Name'"
         [errorMessages]="{
-          pattern: 'Only characters allowed'
+          pattern: 'Only characters allowed',
+          minLength: 'Must have atleast 3 characters'
         }"
       >
       </app-form-field>
@@ -24,7 +25,8 @@
         [icon]="'fas fa-user'"
         [placeholder]="'Surname'"
             [errorMessages]="{
-          pattern: 'Only characters allowed'
+          pattern: 'Only characters allowed',
+          minLength: 'Must have atleast 3 characters'
         }"
       >
       </app-form-field>
@@ -38,7 +40,8 @@
     [icon]="'fas fa-phone'"
     [placeholder]="'Phone number'"
     [errorMessages]="{
-      pattern: 'Incorrect phone format'
+      pattern: 'Incorrect phone format',
+      minLength: 'Must have atleast 5 characters'
     }"
   >
   </app-form-field>

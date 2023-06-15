@@ -29,7 +29,7 @@ export class FormFieldComponent implements OnInit{
     const control = this.formGroup.get(this.controlName);
 
     if (control?.hasError('required')) {
-      return 'You must enter a value';
+      return 'Input cannot be empty';
     }
 
     if (control?.hasError('minlength')) {

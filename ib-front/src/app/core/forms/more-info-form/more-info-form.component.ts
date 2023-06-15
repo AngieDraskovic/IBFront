@@ -22,9 +22,9 @@ export class MoreInfoFormComponent implements OnInit, OnDestroy {
   phoneNumberPattern = "[0-9 +]?[0-9]+[0-9 \\-]+";
 
   moreInfoForm = new FormGroup({
-    name: new FormControl('', [Validators.pattern(this.allTextPattern), Validators.required]),
-    surname: new FormControl('', [Validators.pattern(this.allTextPattern), Validators.required]),
-    telephoneNumber: new FormControl('', [Validators.required, Validators.pattern(this.phoneNumberPattern)]),
+    name: new FormControl('', [Validators.required, Validators.pattern(this.allTextPattern), Validators.minLength(3)]),
+    surname: new FormControl('', [Validators.required, Validators.pattern(this.allTextPattern), Validators.minLength(3)]),
+    telephoneNumber: new FormControl('', [Validators.required, Validators.minLength(5), Validators.pattern(this.phoneNumberPattern)]),
     confirmationMethod: new FormControl('', Validators.required),
     recaptcha: new FormControl('', [Validators.required])
   }, {});

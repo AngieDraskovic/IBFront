@@ -101,5 +101,8 @@ export class ActivationFormComponent implements OnInit {
 
   reset() {
     this.activationForm.reset();
+    this.confirmationData = null;
+    this.anonymizedContact = "";
+    this.updateView();
   }
 }

@@ -25,3 +25,5 @@
     <span class="msg">{{message}}</span>
   </div>
 </div>
+
+<app-spinner *ngIf="loadingService.isLoading | async"></app-spinner>

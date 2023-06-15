@@ -49,7 +49,7 @@ export class LoginComponent implements OnInit {
   currentStep: LoginStep = LoginStep.LoginForm;
   animationType: AnimationType = AnimationType.SLIDE_IN_RIGHT;
 
-  constructor(public loadingService: LoadingService,) {
+  constructor(public loadingService: LoadingService) {
   }
 
   ngOnInit(): void {

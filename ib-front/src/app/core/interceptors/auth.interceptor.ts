@@ -9,12 +9,14 @@ import {catchError, EMPTY, Observable, throwError} from 'rxjs';
 import {AuthService} from "../services/auth.service";
 import {Router} from "@angular/router";
 import {NotificationService} from "../services/notification.service";
+import {LoadingService} from "../services/loading.service";
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
   constructor(private authService: AuthService,
               private router: Router,
-              private notificationService: NotificationService) {}
+              private notificationService: NotificationService,
+              private loadingService: LoadingService) {}
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     let authToken = this.authService.getToken();
@@ -26,6 +28,7 @@ export class AuthInterceptor implements HttpInterceptor {
           'Your session has expired, please log in again',
           'tr');
       }, 800);
+      this.loadingService.hide();
       this.authService.logout();
       this.router.navigate(['/login-register']);
       return EMPTY;

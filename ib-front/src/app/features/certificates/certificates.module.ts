@@ -11,6 +11,7 @@ import {
 } from "./components/revoke-certificate-dialog/revoke-certificate-dialog.component";
 import {FormsModule} from "@angular/forms";
 import {NgxPaginationModule} from "ngx-pagination";
+import {SharedModule} from "../../shared/shared.module";
 
 
 @NgModule({
@@ -21,12 +22,13 @@ import {NgxPaginationModule} from "ngx-pagination";
     AllCertificatesTableComponent,
     MyCertificatesTableComponent,
   ],
-  imports: [
-    CommonModule,
-    FormsModule,
-    NgxPaginationModule,
-    NgOptimizedImage
-  ],
+    imports: [
+        CommonModule,
+        FormsModule,
+        NgxPaginationModule,
+        NgOptimizedImage,
+        SharedModule
+    ],
   exports: [
     CertificatesComponent
   ]

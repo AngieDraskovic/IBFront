@@ -29,6 +29,7 @@ export class AuthInterceptor implements HttpInterceptor {
           'tr');
       }, 800);
       this.loadingService.hide();
+      this.loadingService.hideMain();
       this.authService.logout();
       this.router.navigate(['/login-register']);
       return EMPTY;

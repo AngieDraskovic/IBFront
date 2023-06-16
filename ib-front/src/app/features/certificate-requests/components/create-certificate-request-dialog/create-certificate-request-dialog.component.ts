@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {MatDialogRef} from "@angular/material/dialog";
 import {isAfter, isValid, parse} from 'date-fns';
 import {AuthService} from "../../../../core/services/auth.service";
@@ -8,6 +8,8 @@ import {CreateCertificateRequestDTO} from "../../models/create-certificate-reque
 import {CertificateType} from "../../../certificates/enums/certificate-type.enum";
 import {CustomError} from "../../../../core/models/custom-error";
 import {getCertificateTypeLabel} from "../../../../shared/utilities/certificate-type.util";
+import {RecaptchaComponent} from "ng-recaptcha";
+import {LoadingService} from "../../../../core/services/loading.service";
 
 @Component({
   selector: 'app-create-request-dialog',
@@ -15,8 +17,10 @@ import {getCertificateTypeLabel} from "../../../../shared/utilities/certificate-
   styleUrls: ['./create-certificate-request-dialog.component.css']
 })
 export class CreateCertificateRequestDialogComponent implements OnInit {
+  siteKey = '6Le54BwmAAAAAO5Wppw-q7bP4I1rKwZoZ1c_fWyV';
   protected readonly CertificateType = CertificateType;
   protected readonly getCertificateTypeLabel = getCertificateTypeLabel;
+  @ViewChild('recaptchaElement') captchaRef!: RecaptchaComponent;
 
   hasErrors: boolean = false;
   error: string = "";
@@ -26,10 +30,12 @@ export class CreateCertificateRequestDialogComponent implements OnInit {
   selectedOption?: CertificateType;
   validToValue: string | undefined;
   issuerSNValue: string | undefined;
+  recaptchaToken: string = '';
 
   constructor(private authService: AuthService,
               private certificateRequestService: CertificateRequestService,
-              private dialogRef: MatDialogRef<CreateCertificateRequestDialogComponent>) {
+              private dialogRef: MatDialogRef<CreateCertificateRequestDialogComponent>,
+              public loadingService: LoadingService) {
   }
 
   ngOnInit(): void {
@@ -92,18 +98,31 @@ export class CreateCertificateRequestDialogComponent implements OnInit {
       return;
     }
 
+    if (this.recaptchaToken == null) {
+      this.hasErrors = true;
+      this.error = "Captcha is required."
+      return;
+    }
+
     const createCertificateRequestDTO: CreateCertificateRequestDTO = {
       issuerSN: this.issuerSNValue,
       certificateType: this.selectedOption,
-      validTo: formattedDate
+      validTo: formattedDate,
+      recaptchaToken: this.recaptchaToken
     }
 
+    this.loadingService.show();
     if (this.authService.getUserRole() == UserRoleEnum.Admin) {
       this.certificateRequestService.createAdminCertificateRequest(createCertificateRequestDTO).subscribe({
         next: () => {
+          this.loadingService.hide();
+
           this.dialogRef.close(true);
         },
         error: (error: CustomError) => {
+          this.loadingService.hide();
+
+          this.reset();
           this.hasErrors = true;
           this.error = error.message
         }
@@ -111,9 +130,14 @@ export class CreateCertificateRequestDialogComponent implements OnInit {
     } else if (this.authService.getUserRole() == UserRoleEnum.User) {
       this.certificateRequestService.createUserCertificateRequest(createCertificateRequestDTO).subscribe({
         next: () => {
+          this.loadingService.hide();
+
           this.dialogRef.close(true);
         },
         error: (error: CustomError) => {
+          this.loadingService.hide();
+
+          this.reset();
           this.hasErrors = true;
           this.error = error.message
         }
@@ -134,5 +158,14 @@ export class CreateCertificateRequestDialogComponent implements OnInit {
     } else {
       return null;
     }
+  }
+
+  handleRecaptchaResponse(response: string) {
+    this.recaptchaToken = response;
+  }
+
+  reset() {
+    this.recaptchaToken = '';
+    this.captchaRef.reset();
   }
 }

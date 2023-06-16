@@ -1,4 +1,4 @@
-import {Component, EventEmitter, OnDestroy, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {SharedDataService} from "../../services/shared-data.service";
 import {Subject, takeUntil} from "rxjs";
@@ -6,6 +6,7 @@ import {RegistrationData} from "../../models/registration-data";
 import {RegistrationService} from "../../services/registration.service";
 import {LoadingService} from "../../services/loading.service";
 import {NotificationService} from "../../services/notification.service";
+import {RecaptchaComponent} from "ng-recaptcha";
 
 @Component({
   selector: 'app-more-info-form',
@@ -17,6 +18,7 @@ export class MoreInfoFormComponent implements OnInit, OnDestroy {
 
   siteKey = '6Le54BwmAAAAAO5Wppw-q7bP4I1rKwZoZ1c_fWyV';
   recaptchaToken: string = '';
+  @ViewChild('recaptchaElement') captchaRef!: RecaptchaComponent;
 
   allTextPattern = "[a-zA-Z][a-zA-Z]*";
   phoneNumberPattern = "[0-9 +]?[0-9]+[0-9 \\-]+";
@@ -84,6 +86,8 @@ export class MoreInfoFormComponent implements OnInit, OnDestroy {
       },
       error: () => {
         this.loadingService.hide();
+        this.captchaRef.reset();
+        this.recaptchaToken = '';
         this.notificationService.showDefaultError('tl');
       }
     });
@@ -101,5 +105,7 @@ export class MoreInfoFormComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.destroy$.next();
     this.destroy$.complete();
+    this.captchaRef.reset();
+    this.recaptchaToken = '';
   }
 }

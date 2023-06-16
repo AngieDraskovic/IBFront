@@ -81,7 +81,6 @@ export class LoginFormComponent implements OnInit {
           this.notificationService.showWarning("Invalid email", "Entered email does not exist", 'tr');
         } else {
           this.notificationService.showDefaultError('tr');
-
         }
       }
     });
@@ -115,6 +114,7 @@ export class LoginFormComponent implements OnInit {
           }
         },
         error: (error: CustomError) => {
+          this.captchaRef.reset();
           this.loadingService.hide();
 
           if (error.status == 401 || error.status == 403) {
@@ -128,9 +128,12 @@ export class LoginFormComponent implements OnInit {
   }
 
   loginWithGoogle(user: SocialUser) {
+    this.loadingService.show();
     const oauthToken: OauthToken = {token: user.idToken};
     this.authService.loginWithGoogle(oauthToken).subscribe({
         next: () => {
+          this.loadingService.hide();
+
           const userRole = this.authService.getUserRole();
           if (userRole === UserRoleEnum.Admin) {
             this.router.navigate(['/admin']);
@@ -139,7 +142,9 @@ export class LoginFormComponent implements OnInit {
           }
         },
         error: (error: CustomError) => {
-          if (error.status == 401 || error.status == 403) {
+          this.loadingService.hide();
+
+          if (error.status == 403) {
             this.notificationService.showWarning("Warning", error.message, 'tr');
           } else {
             this.notificationService.showDefaultError('tr');

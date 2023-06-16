@@ -17,7 +17,9 @@ import {
 import {
   OutgoingCertificateRequestsTableComponent
 } from "./components/outgoing-certificate-requests-table/outgoing-certificate-requests-table.component";
-import {FormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {RecaptchaModule} from "ng-recaptcha";
+import {SharedModule} from "../../shared/shared.module";
 
 
 @NgModule({
@@ -33,7 +35,10 @@ import {FormsModule} from "@angular/forms";
     CommonModule,
     NgOptimizedImage,
     NgxPaginationModule,
-    FormsModule
+    FormsModule,
+    ReactiveFormsModule,
+    RecaptchaModule,
+    SharedModule
   ],
   exports: [
     CertificateRequestsComponent,

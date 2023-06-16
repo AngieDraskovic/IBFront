@@ -10,6 +10,7 @@ import {FormFieldComponent} from './components/form-field/form-field.component';
 import {FormButtonComponent} from './components/form-button/form-button.component';
 import {BackButtonComponent} from './components/back-button/back-button.component';
 import { SpinnerComponent } from './components/spinner/spinner.component';
+import { SpinnerBackgroundedComponent } from './components/spinner-backgrounded/spinner-backgrounded.component';
 
 
 @NgModule({
@@ -19,16 +20,18 @@ import { SpinnerComponent } from './components/spinner/spinner.component';
     FormFieldComponent,
     FormButtonComponent,
     BackButtonComponent,
-    SpinnerComponent
+    SpinnerComponent,
+    SpinnerBackgroundedComponent
   ],
-  exports: [
-    NavigationComponent,
-    DropdownComponent,
-    FormFieldComponent,
-    FormButtonComponent,
-    BackButtonComponent,
-    SpinnerComponent
-  ],
+    exports: [
+        NavigationComponent,
+        DropdownComponent,
+        FormFieldComponent,
+        FormButtonComponent,
+        BackButtonComponent,
+        SpinnerComponent,
+        SpinnerBackgroundedComponent
+    ],
   imports: [
     CommonModule,
     RouterLink,

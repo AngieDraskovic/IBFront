@@ -1,4 +1,4 @@
-import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, OnInit, Output, ViewChild} from '@angular/core';
 import {Subject, takeUntil} from "rxjs";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {match} from "../../../shared/utilities/match.validator";
@@ -8,6 +8,8 @@ import {LoadingService} from "../../services/loading.service";
 import {NotificationService} from "../../services/notification.service";
 import {CustomError} from "../../models/custom-error";
 import {ResetPassword} from "../../models/reset-password";
+import {RecaptchaComponent} from "ng-recaptcha";
+import {th} from "date-fns/locale";
 
 @Component({
   selector: 'app-reset-password-form',
@@ -15,12 +17,17 @@ import {ResetPassword} from "../../models/reset-password";
   styleUrls: ['./reset-password-form.component.css']
 })
 export class ResetPasswordFormComponent implements OnInit {
+  siteKey = '6Le54BwmAAAAAO5Wppw-q7bP4I1rKwZoZ1c_fWyV';
+  recaptchaToken: string = '';
+  @ViewChild('recaptchaElement') captchaRef!: RecaptchaComponent;
+
   private destroy$ = new Subject<void>();
 
   resetPasswordForm = new FormGroup({
     code: new FormControl('', [Validators.required]),
     password: new FormControl('', [Validators.required, Validators.minLength(6)]),
-    confirmPassword: new FormControl('', [Validators.required,])
+    confirmPassword: new FormControl('', [Validators.required,]),
+    recaptcha: new FormControl('', [Validators.required])
   }, {validators: [match('password', 'confirmPassword')]});
 
 
@@ -53,6 +60,7 @@ export class ResetPasswordFormComponent implements OnInit {
       newPassword: this.resetPasswordForm.controls['password'].value ?? '',
       newPasswordConfirm: this.resetPasswordForm.controls['confirmPassword'].value ?? '',
       code: this.resetPasswordForm.controls['code'].value ?? '',
+      recaptchaToken: this.recaptchaToken
     }
 
     this.loadingService.show();
@@ -74,6 +82,10 @@ export class ResetPasswordFormComponent implements OnInit {
       },
       error: (error: CustomError) => {
         this.loadingService.hide();
+        this.captchaRef.reset();
+        this.recaptchaToken = '';
+        this.resetPasswordForm.controls['recaptcha'].reset();
+
         if (error.status == 404) {
           this.notificationService.showWarning('Invalid code', 'The code you entered is invalid', 'tr');
         } else if (error.status == 400) {
@@ -85,12 +97,19 @@ export class ResetPasswordFormComponent implements OnInit {
     });
   }
 
+
   navigateBack() {
     this.onBack.emit();
     this.reset();
   }
 
+  handleRecaptchaResponse(response: string) {
+    this.recaptchaToken = response;
+  }
+
   reset() {
     this.resetPasswordForm.reset();
+    this.recaptchaToken = '';
+    this.captchaRef.reset();
   }
 }

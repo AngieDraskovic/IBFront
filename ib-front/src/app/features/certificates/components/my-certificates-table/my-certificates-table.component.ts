@@ -9,6 +9,7 @@ import {RevokeCertificateDialogComponent} from "../revoke-certificate-dialog/rev
 import {CertificateDownloadService} from "../../services/certificate-download.service";
 import {CertificateStatus} from "../../enums/certificate-status.enum";
 import {UserRoleEnum} from "../../../../core/enums/user-role.enum";
+import {LoadingService} from "../../../../core/services/loading.service";
 
 @Component({
   selector: 'app-my-certificates-table',
@@ -28,7 +29,8 @@ export class MyCertificatesTableComponent implements OnInit {
               private certificateService: CertificateService,
               private dialog: MatDialog,
               private toastService: NgToastService,
-              private sharedService: CertificateDownloadService) {
+              private sharedService: CertificateDownloadService,
+              private loadingService: LoadingService) {
   }
 
   ngOnInit(): void {
@@ -36,12 +38,18 @@ export class MyCertificatesTableComponent implements OnInit {
   }
 
   fetchOwnedCertificates() {
+    this.loadingService.showMain();
+
     this.certificateService.getCertificatesForUser(this.currentPage - 1, this.itemsPerPage).subscribe({
       next: (response) => {
+        this.loadingService.hideMain();
+
         this.certificatesOwned = response.content;
         this.totalItems = response.totalElements;
       },
       error: (error: CustomError) => {
+        this.loadingService.hideMain();
+
         console.error('Error fetching certificates', error);
       }
     })
@@ -59,8 +67,12 @@ export class MyCertificatesTableComponent implements OnInit {
     const dialogRef = this.dialog.open(RevokeCertificateDialogComponent, {});
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
+        this.loadingService.showMain();
+
         this.certificateService.revokeCertificate(serialNumber).subscribe({
           next: (data) => {
+            this.loadingService.hideMain();
+
             this.fetchOwnedCertificates();
             this.toastService.success({
               detail: "Certificate revoked",
@@ -71,6 +83,8 @@ export class MyCertificatesTableComponent implements OnInit {
             this.refreshEvent.emit();
           },
           error: (error) => {
+            this.loadingService.hideMain();
+
             this.toastService.error({
               detail: "Error",
               summary: "An error occurred.",

@@ -4,4 +4,5 @@ export interface CreateCertificateRequestDTO {
   issuerSN: string | undefined;
   certificateType: CertificateType;
   validTo: Date;
+  recaptchaToken: string
 }

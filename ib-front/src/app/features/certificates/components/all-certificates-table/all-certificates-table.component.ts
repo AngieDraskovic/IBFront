@@ -8,6 +8,7 @@ import {CustomError} from "../../../../core/models/custom-error";
 import {CertificateDownloadService} from "../../services/certificate-download.service";
 import {UserRoleEnum} from "../../../../core/enums/user-role.enum";
 import {NotificationService} from "../../../../core/services/notification.service";
+import {LoadingService} from "../../../../core/services/loading.service";
 
 @Component({
   selector: 'app-all-certificates-table',
@@ -27,7 +28,8 @@ export class AllCertificatesTableComponent implements OnInit {
               private dialog: MatDialog,
               private toastService: NgToastService,
               private sharedService: CertificateDownloadService,
-              private notificationService: NotificationService) {
+              private notificationService: NotificationService,
+              private loadingService: LoadingService) {
   }
 
   ngOnInit(): void {
@@ -35,12 +37,18 @@ export class AllCertificatesTableComponent implements OnInit {
   }
 
   fetchAllCertificates() {
+    this.loadingService.showMain();
+
     this.certificateService.getAllPaged(this.currentPage - 1, this.itemsPerPage).subscribe({
       next: (response) => {
+        this.loadingService.hideMain();
+
         this.allCertificates = response.content;
         this.totalItems = response.totalElements;
       },
       error: (error: CustomError) => {
+        this.loadingService.hideMain();
+
         this.notificationService.showDefaultError('tr');
       }
     })

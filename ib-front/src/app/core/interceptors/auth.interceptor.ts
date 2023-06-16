@@ -41,17 +41,6 @@ export class AuthInterceptor implements HttpInterceptor {
 
     return next.handle(authReq).pipe(
       catchError((error: HttpErrorResponse) => {
-        if (error.status === 401) {
-          setTimeout(() => {
-            this.notificationService.showWarning(
-              "Expired session",
-              'Your session has expired, please log in again',
-              'tr');
-          }, 800);
-          this.authService.logout();
-          this.router.navigate(['/login-register']);
-        }
-
         return throwError(() => error);
       })
     );

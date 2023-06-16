@@ -5,6 +5,7 @@ import {CustomError} from "../../../../core/models/custom-error";
 import {CertificateRequest} from "../../models/certificate-request";
 import {RejectionReason} from "../../../../core/models/rejection-reason";
 import {NgToastService} from "ng-angular-popup";
+import {LoadingService} from "../../../../core/services/loading.service";
 
 @Component({
   selector: 'app-incoming-certificate-requests-table',
@@ -21,7 +22,8 @@ export class IncomingCertificateRequestsTableComponent implements OnInit{
 
   constructor(private authService: AuthService,
               private certificateRequestService: CertificateRequestService,
-              private toastService: NgToastService) {
+              private toastService: NgToastService,
+              private loadingService: LoadingService) {
   }
 
   ngOnInit(): void {
@@ -29,20 +31,30 @@ export class IncomingCertificateRequestsTableComponent implements OnInit{
   }
 
   fetchIncomingCertificateRequests() {
+    this.loadingService.showMain();
+
     this.certificateRequestService.getIncomingCertificateRequests(this.currentPage - 1, this.itemsPerPage).subscribe({
       next: (response) => {
+        this.loadingService.hideMain();
+
         this.incomingCertificateRequests = response.content;
         this.totalItems = response.totalElements;
       },
       error: (error: CustomError) => {
+        this.loadingService.hideMain();
+
         console.error('Error fetching certificate requests', error);
       }
     })
   }
 
   approveRequest(id: string) {
+    this.loadingService.showMain();
+
     this.certificateRequestService.approveCertificateRequest(id).subscribe({
       next: () => {
+        this.loadingService.hideMain();
+
         this.toastService.success({
           detail: "Approved successfully",
           summary: "Request approved successfully.",
@@ -52,6 +64,8 @@ export class IncomingCertificateRequestsTableComponent implements OnInit{
         this.fetchIncomingCertificateRequests();
       },
       error: (error: CustomError) => {
+        this.loadingService.hideMain();
+
         console.error(error.message);
       }
     })
@@ -62,8 +76,11 @@ export class IncomingCertificateRequestsTableComponent implements OnInit{
       reason: "Proba"
     }
 
+    this.loadingService.showMain();
     this.certificateRequestService.rejectCertificateRequest(id, rejectionReason).subscribe({
       next: () => {
+        this.loadingService.hideMain();
+
         this.toastService.success({
           detail: "Rejected successfully",
           summary: "Request rejected successfully.",
@@ -73,6 +90,8 @@ export class IncomingCertificateRequestsTableComponent implements OnInit{
         this.fetchIncomingCertificateRequests();
       },
       error: (error: CustomError) => {
+        this.loadingService.hideMain();
+
         console.error(error.message);
       }
     })

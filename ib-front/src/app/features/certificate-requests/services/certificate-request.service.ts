@@ -57,8 +57,6 @@ export class CertificateRequestService {
           }
 
           const requestObservables = certificateRequests.content.map(certificateRequest => {
-            console.log(certificateRequest);
-
             if (certificateRequest.issuerSN === null) {
               return of({
                 ...certificateRequest,

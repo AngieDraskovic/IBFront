@@ -3,7 +3,7 @@
     <h3>Create request</h3>
   </div>
 
-  <form action="../../../../index.html" class="contact-form">
+  <form class="contact-form">
     <div class="input-wrap">
       <div class="dropdown">
         <div class="select" [class.select-clicked]="menuOpen" (click)="toggleMenu()">
@@ -39,6 +39,15 @@
       <p>{{error}}</p>
     </div>
 
+    <re-captcha #recaptchaElement
+                class="captcha"
+                formControlName="recaptcha"
+                siteKey="{{ siteKey }}"
+                (resolved)="handleRecaptchaResponse($event)"
+                reCaptchaValueAccessor
+    >
+    </re-captcha>
+
     <div class="contact-buttons w-100">
       <button class="btn upload" (click)="cancel()">
               <span>
@@ -50,3 +59,5 @@
     </div>
   </form>
 </div>
+
+<app-spinner-backgrounded *ngIf="loadingService.isLoading | async"></app-spinner-backgrounded>

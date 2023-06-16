@@ -55,6 +55,7 @@ import { ResetPasswordFormComponent } from './forms/reset-password-form/reset-pa
       useClass: AuthInterceptor,
       multi: true,
     },
+
   ],
   exports: [
     Home

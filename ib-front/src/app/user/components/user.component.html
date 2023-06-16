@@ -17,6 +17,8 @@
     <a href="#" class="profile">
       <img ngSrc="assets/images/profile.png" height="40" width="60" alt="">
     </a>
+
+    <app-spinner-backgrounded *ngIf="loadingService.isLoadingMain | async"></app-spinner-backgrounded>
   </nav>
 
   <router-outlet></router-outlet>

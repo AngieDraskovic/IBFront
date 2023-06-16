@@ -53,11 +53,15 @@
 
   </app-dropdown>
 
-  <re-captcha class="captcha"
-              formControlName="recaptcha"
-              siteKey="{{ siteKey }}"
-              (resolved)="handleRecaptchaResponse($event)"
-              reCaptchaValueAccessor></re-captcha>
+  <re-captcha
+    #recaptchaElement
+    class="captcha"
+    formControlName="recaptcha"
+    siteKey="{{ siteKey }}"
+    (resolved)="handleRecaptchaResponse($event)"
+    reCaptchaValueAccessor
+  >
+  </re-captcha>
 
   <div class="btn-container">
     <app-back-button

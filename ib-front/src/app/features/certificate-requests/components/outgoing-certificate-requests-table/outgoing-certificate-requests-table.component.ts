@@ -3,6 +3,7 @@ import {AuthService} from "../../../../core/services/auth.service";
 import {CustomError} from "../../../../core/models/custom-error";
 import {CertificateRequestService} from "../../services/certificate-request.service";
 import {OutgoingCertificateRequest} from "../../models/outgoing-certificate-request";
+import {LoadingService} from "../../../../core/services/loading.service";
 
 @Component({
   selector: 'app-outgoing-requests-table',
@@ -16,7 +17,8 @@ export class OutgoingCertificateRequestsTableComponent implements OnInit {
   outgoingCertificateRequests: OutgoingCertificateRequest[] = [];
 
   constructor(private authService: AuthService,
-              private certificateRequestService: CertificateRequestService) {
+              private certificateRequestService: CertificateRequestService,
+              private loadingService: LoadingService) {
   }
 
   ngOnInit(): void {
@@ -24,15 +26,19 @@ export class OutgoingCertificateRequestsTableComponent implements OnInit {
   }
 
   fetchOutgoingCertificateRequests() {
+    this.loadingService.showMain();
+
     this.certificateRequestService.getOutgoingCertificateRequests(this.currentPage - 1, this.itemsPerPage)
       .subscribe({
         next: (response) => {
+          this.loadingService.hideMain();
+
           this.outgoingCertificateRequests = response.content;
           this.totalItems = response.totalElements;
-
-          console.log(response.content);
         },
         error: (error: CustomError) => {
+          this.loadingService.hideMain();
+
           console.log(error);
         }
       })

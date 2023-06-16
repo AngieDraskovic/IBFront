@@ -1,5 +1,6 @@
 import {Component, ViewChild} from '@angular/core';
 import {NavigationComponent} from "../../core/components/navigation/navigation.component";
+import {LoadingService} from "../../core/services/loading.service";
 
 @Component({
   selector: 'app-user',
@@ -11,7 +12,7 @@ export class UserComponent {
 
   contentExpanded :boolean = false;
 
-  constructor() {}
+  constructor(public loadingService: LoadingService) {}
 
   toggleMenu() {
     this.navigationComponent.toggleMenu();

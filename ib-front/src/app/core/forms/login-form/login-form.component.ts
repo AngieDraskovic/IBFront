@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, EventEmitter, OnInit, Output, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, EventEmitter, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {AuthService} from "../../services/auth.service";
 import {SocialAuthService, SocialUser} from "@abacritt/angularx-social-login";
@@ -14,6 +14,7 @@ import {LoadingService} from "../../services/loading.service";
 import {SharedDataService} from "../../services/shared-data.service";
 import {LoginData} from "../../models/login-data";
 import {UserService} from "../../services/user.service";
+import {Subscription} from "rxjs";
 
 @Component({
   selector: 'app-login-form',
@@ -36,6 +37,8 @@ export class LoginFormComponent implements OnInit {
   @Output() onResetPassword = new EventEmitter<void>();
   @Output() renewPasswordRequired = new EventEmitter<void>();
 
+  private authStateSubscription: Subscription | undefined;
+
   constructor(
     private loadingService: LoadingService,
     private sharedService: SharedDataService,
@@ -47,7 +50,7 @@ export class LoginFormComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.socialAuthService.authState.subscribe((user) => {
+    this.authStateSubscription = this.socialAuthService.authState.subscribe((user) => {
       if (user != null) {
         this.loginWithGoogle(user);
       }

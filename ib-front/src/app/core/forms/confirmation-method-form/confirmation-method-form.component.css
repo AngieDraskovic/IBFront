@@ -1,0 +1,122 @@
+form {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  max-width: 400px;
+  margin: auto;
+}
+
+.title2 {
+  font-size: 1.6rem;
+  color: #444;
+  margin-top: 4px;
+  margin-bottom: 12px;
+}
+
+.input {
+  width: 100%;
+}
+
+/*Confirmation method pick*/
+.icon-holder {
+  background: var(--light-blue);
+  margin-bottom: 8px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 68px;
+  height: 68px;
+  border-radius: 60px;
+}
+
+.shield-icon {
+  font-size: 42px;
+  color: var(--blue);
+}
+
+.radio-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin-top: 14px;
+  margin-bottom: 14px;
+}
+
+.radio-list {
+  max-width: 400px;
+  width: 100%;
+}
+
+.radio-item [type="radio"] {
+  display: none;
+}
+
+.radio-item + .radio-item {
+  margin-top: 15px;
+}
+
+.radio-item label {
+  display: block;
+  padding: 20px 60px;
+  border: 1.5px solid #C0C0C0;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1.05rem;
+  min-width: 250px;
+  white-space: nowrap;
+  position: relative;
+  color: #333;
+}
+
+.radio-item label:after,
+.radio-item label:before {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+}
+
+.radio-item label:after {
+  height: 20px;
+  width: 20px;
+  border: 2px solid var(--blue);
+  left: 20px;
+  top: calc(50% - 12px);
+}
+
+.radio-item label:before {
+  background: var(--blue);
+  height: 10px;
+  width: 10px;
+  left: 27px;
+  top: calc(50% - 5px);
+  transform: scale(5);
+  transition: .4s ease-in-out 0s;
+  opacity: 0;
+  visibility: hidden;
+}
+
+.radio-item [type="radio"]:checked ~ label {
+  border-color: var(--blue);
+}
+
+.radio-item [type="radio"]:checked ~ label:before {
+  opacity: 1;
+  visibility: visible;
+  transform: scale(1);
+}
+
+.btn-container {
+  max-width: 400px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+@media (max-width: 570px) {
+  form {
+    padding: 0 1.5rem;
+  }
+}

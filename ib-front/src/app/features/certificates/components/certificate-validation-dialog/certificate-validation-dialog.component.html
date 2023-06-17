@@ -1,0 +1,29 @@
+<div class="dialog">
+  <h2>Validate Certificate</h2>
+
+  <div class="input-box">
+    <i class="fa fa-solid fa-file-circle-check"></i>
+    <input type="text" placeholder="Enter certificate SN..." #certSN>
+    <button (click)="validateCert(certSN.value)" class="validate">Validate</button>
+  </div>
+
+  <h3>OR</h3>
+
+  <input type="file" id="file" accept="*" (change)="onFileSelected($event)">
+  <label for="file" class="upload-file">
+    <i class='fa fa-regular fa-cloud-arrow-up'></i>
+    Upload a certificate
+  </label>
+
+  <div class="valid" *ngIf="slideInLeftFirst" [ngClass]="{'slide-in-left': slideInLeftFirst}" >
+    <span class="fas fa-solid fa-circle-check"></span>
+    <span class="msg">{{message}}</span>
+  </div>
+
+  <div class="invalid" *ngIf="slideInLeftSecond" [ngClass]="{'slide-in-left': slideInLeftSecond}">
+    <span class="fas fa-solid fa-circle-xmark"></span>
+    <span class="msg">{{message}}</span>
+  </div>
+</div>
+
+<app-spinner-backgrounded *ngIf="loadingService.isLoading | async"></app-spinner-backgrounded>

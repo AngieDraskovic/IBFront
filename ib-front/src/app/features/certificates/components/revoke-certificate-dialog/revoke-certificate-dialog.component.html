@@ -1,0 +1,29 @@
+<section class="contact">
+  <div class="container">
+    <div class="form-wrapper">
+      <div class="contact-heading">
+        <h3>Revocation reason</h3>
+      </div>
+
+      <form class="contact-form">
+        <div class="input-wrap textarea w-100">
+            <textarea #reason [(ngModel)]="inputValue" name="Reason" autocomplete="off" class="contact-input" required
+                      (focus)="onFocus(reason)" (blur)="onBlur(reason)"
+            ></textarea>
+          <label>Reason</label>
+          <i class="icon fa-solid fa-inbox"></i>
+        </div>
+
+        <div class="contact-buttons w-100">
+          <button class="btn upload" (click)="cancel()">
+              <span>
+                <i class="fa-solid fa-circle-xmark"></i>
+                Cancel revocation
+              </span>
+          </button>
+          <input type="submit" value="Revocate" class="btn" (click)="finish()">
+        </div>
+      </form>
+    </div>
+  </div>
+</section>

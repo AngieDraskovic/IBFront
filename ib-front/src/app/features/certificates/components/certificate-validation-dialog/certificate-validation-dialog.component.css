@@ -1,0 +1,195 @@
+.dialog {
+  width: 800px;
+  height: 600px;
+  padding: 25px;
+  background: var(--grey);
+}
+
+h2 {
+  font-size: 32px;
+  font-weight: 600;
+  margin-bottom: 40px;
+  color: var(--dark);
+}
+
+.input-box {
+  position: relative;
+  height: 76px;
+  max-width: 900px;
+  width: 80%;
+  background-color: #fff;
+  padding: 10px 20px;
+  border-radius: 8px;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+
+  text-align: center;
+  margin: auto;
+}
+
+.input-box i,
+.input-box button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.input-box i {
+  left: 0;
+  font-size: 30px;
+  color: var(--green);
+}
+
+.input-box input {
+  height: 100%;
+  width: 100%;
+  outline: none;
+  font-size: 18px;
+  font-weight: 400;
+  border: none;
+  padding: 0 155px 0 65px;
+  background-color: transparent;
+}
+
+.input-box .validate {
+  cursor: pointer;
+  right: 20px;
+  font-size: 16px;
+  font-weight: 400;
+  color: #fff;
+  border: none;
+  padding: 12px 30px;
+  border-radius: 6px;
+  background-color: var(--blue);
+}
+
+h3 {
+  font-family: sans-serif;
+  margin: 60px auto;
+  text-align: center;
+  font-size: 40px;
+  max-width: 600px;
+  position: relative;
+  font-weight: 400;
+  color: var(--dark);
+}
+
+h3:before {
+  content: "";
+  display: block;
+  width: 250px;
+  height: 1px;
+  background: grey;
+  position: absolute;
+  left: 0;
+  top: 50%;
+}
+
+h3:after {
+  content: "";
+  display: block;
+  width: 250px;
+  height: 1px;
+  background: grey;
+  position: absolute;
+  right: 0;
+  top: 50%;
+}
+
+
+input[type="file"] {
+  display: none;
+}
+
+.upload-file {
+  cursor: pointer;
+  color: white;
+  height: 60px;
+  width: 300px;
+  border-radius: 6px;
+  background-color: var(--blue);
+  margin: auto;
+  font-size: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: "Poppins", sans-serif;
+}
+
+.fa {
+  width: 80px;
+  height: 80px;
+  border-radius: 10px;
+  font-size: 36px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.valid {
+  background: #9bffa9;
+  padding: 20px 40px;
+  min-width: 420px;
+  position: relative;
+  border-radius: 4px;
+  border-left: 8px solid #289233;
+  margin-left: 72px;
+  margin-right: 72px;
+  margin-top: 4em;
+}
+
+.valid .fa-circle-check {
+  position: absolute;
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #289233;
+  font-size: 30px;
+}
+
+.valid .msg {
+  padding: 0 20px;
+  font-size: 18px;
+  color: #289233;
+}
+
+.invalid {
+  background: #FFDDDE;
+  padding: 20px 40px;
+  min-width: 420px;
+  position: relative;
+  border-radius: 4px;
+  border-left: 8px solid #FE3D4F;
+  margin-left: 72px;
+  margin-right: 72px;
+  margin-top: 4em;
+}
+
+.invalid .fa-circle-xmark {
+  position: absolute;
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #FE3D4F;
+  font-size: 30px;
+}
+
+.invalid .msg {
+  padding: 0 20px;
+  font-size: 18px;
+  color: #FE3D4F;
+}
+
+@keyframes slideInLeft {
+  0% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.slide-in-left {
+  animation: slideInLeft 1s ease-out forwards;
+}

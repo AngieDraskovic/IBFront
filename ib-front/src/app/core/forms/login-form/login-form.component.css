@@ -1,0 +1,57 @@
+form {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  max-width: 400px;
+  margin: auto;
+}
+
+.title {
+  font-size: 2.2rem;
+  color: #444;
+  margin-bottom: 10px;
+}
+
+.input {
+  width: 100%;
+}
+
+.social-text {
+  padding: 0.7rem 0;
+  font-size: 1rem;
+}
+
+.captcha {
+  margin-top: 12px;
+  margin-bottom: 12px;
+}
+
+.social-media {
+  display: flex;
+  justify-content: center;
+}
+
+.social-icon:hover {
+  color: #4481eb;
+  border-color: #4481eb;
+}
+
+.reset-password {
+  width: 100%;
+  text-align: right;
+  color: var(--text-color);
+  font-weight: 450;
+  margin-bottom: 10px;
+}
+
+.reset-password span:hover {
+  color: var(--blue);
+  cursor: pointer;
+}
+
+@media (max-width: 570px) {
+  form {
+    padding: 0 1.5rem;
+  }
+}

@@ -1,0 +1,45 @@
+<div class="table-data">
+  <div class="order">
+    <div class="head">
+      <h3>All requests</h3>
+      <i class='bx bx-search'></i>
+      <i class='bx bx-filter'></i>
+    </div>
+    <table>
+      <thead>
+      <tr>
+        <th>Applicant</th>
+        <th>Issuer SN</th>
+        <th>Certificate type</th>
+        <th>Valid To</th>
+        <th>Status</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let request of allCertificateRequests | paginate: { id: 'allCertificateRequests', itemsPerPage: itemsPerPage, currentPage: currentPage, totalItems: totalItems }">
+        <td>
+          <img ngSrc="assets/images/profile.png" width="60" height="40" alt="">
+          <p>{{request.subjectUsername }}</p>
+        </td>
+        <td>
+          <ng-container *ngIf="request.issuerSN; else nullIssuerSN">
+            {{request.issuerSN}}
+          </ng-container>
+          <ng-template #nullIssuerSN>
+            ROOT
+          </ng-template>
+        </td>
+        <td><span class="type">{{request.certificateType}}</span></td>
+        <td>{{ request.validTo | date:'dd-MM-yyyy' }}</td>
+        <td><span class="status {{ request.status.toLowerCase() }}">{{request.status}}</span></td>
+      </tr>
+      </tbody>
+    </table>
+
+    <pagination-controls
+      id="allCertificateRequests"
+      (pageChange)="onPageChanged($event)"
+    >
+    </pagination-controls>
+  </div>
+</div>

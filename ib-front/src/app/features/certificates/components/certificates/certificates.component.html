@@ -1,0 +1,52 @@
+<main>
+  <div class="head-title">
+    <div class="left">
+      <h1>Certificates</h1>
+      <ul class="breadcrumb">
+        <li>
+          <a href="#">Certificates</a>
+        </li>
+        <li><i class='fa fa-regular fa-chevron-right'></i></li>
+        <li>
+          <a class="active" href="#">Home</a>
+        </li>
+      </ul>
+    </div>
+    <a (click)="openCertificateValidationDialog()" class="btn-download">
+      <i class='fa fa-solid fa-stamp'></i> &nbsp;
+      <span class="text">
+
+        Validate Certificate
+      </span>
+    </a>
+  </div>
+
+  <ul class="box-info">
+    <li>
+      <i class='fa fa-regular fa-certificate'></i>
+      <span class="text">
+						<h3>{{numberOfCertificates}}</h3>
+						<p>Certificates</p>
+					</span>
+    </li>
+    <li>
+      <i class='fa fa-solid fa-clock'></i>
+      <span class="text">
+						<h3>{{numberOfExpiredCertificates}}</h3>
+						<p>Expired</p>
+					</span>
+    </li>
+    <li>
+      <i class='fa fa-solid fa-xmark'></i>
+      <span class="text">
+						<h3>{{numberOfRevokedCertificates}}</h3>
+						<p>Revoked</p>
+					</span>
+    </li>
+  </ul>
+
+
+  <app-my-certificates-table (refreshEvent)="refresh()" #myCertificates></app-my-certificates-table>
+
+  <app-all-certificates-table #allCertificates></app-all-certificates-table>
+</main>

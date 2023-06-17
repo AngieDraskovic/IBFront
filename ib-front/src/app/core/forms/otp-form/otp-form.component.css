@@ -1,0 +1,121 @@
+:where(.container, form, .input-field, header) {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.container {
+  position: relative;
+  background: #fff;
+  border-radius: 12px;
+  row-gap: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+  max-width: 400px;
+  margin: 10px auto;
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+.arrow {
+  cursor: pointer;
+  position: absolute;
+  top: 55px;
+  left: 50px;
+  transform: rotate(90deg);
+}
+
+.arrow span {
+  display: block;
+  width: 14px;
+  height: 14px;
+  border-bottom: 3px solid lightgray;
+  border-right: 3px solid lightgray;
+  transform: rotate(45deg);
+  margin: -10px;
+  animation: animate 2s infinite;
+}
+
+.arrow span:nth-child(2) {
+  animation-delay: -0.2s;
+}
+
+.arrow span:nth-child(3) {
+  animation-delay: -0.4s;
+}
+
+@keyframes animate {
+  0% {
+    opacity: 0;
+    transform: rotate(45deg) translate(-20px, -20px);
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: rotate(45deg) translate(20px, 20px);
+  }
+}
+
+.container header {
+  height: 65px;
+  width: 65px;
+  background: var(--blue);
+  color: #fff;
+  font-size: 2.5rem;
+  border-radius: 50%;
+}
+
+.container h4 {
+  font-size: 1.25rem;
+  color: #333;
+  font-weight: 500;
+}
+
+form .input-field {
+  flex-direction: row;
+  column-gap: 10px;
+}
+
+.input-field input {
+  height: 45px;
+  width: 42px;
+  border-radius: 6px;
+  outline: none;
+  font-size: 1.125rem;
+  text-align: center;
+  border: 1px solid #ddd;
+}
+
+.input-field input:focus {
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
+}
+
+.input-field input::-webkit-inner-spin-button,
+.input-field input::-webkit-outer-spin-button {
+  display: none;
+}
+
+form button {
+  margin-top: 25px;
+  width: 100%;
+  color: #fff;
+  font-size: 1rem;
+  border: none;
+  padding: 9px 0;
+  cursor: pointer;
+  border-radius: 6px;
+  pointer-events: none;
+  background: var(--blue);
+  transition: all 0.2s ease;
+}
+
+form button.active {
+  background: var(--light-blue);
+  pointer-events: auto;
+}
+
+form button:hover {
+  background: var(--blue);
+}

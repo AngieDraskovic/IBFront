@@ -1,0 +1,197 @@
+.contact {
+  width: 100%;
+  overflow: hidden;
+  background-color: var(--grey);
+}
+
+.contact .container {
+  padding: 3em 5em;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr;
+}
+
+.contact .container > div {
+  grid-column: 1/2;
+  grid-row: 1/2;
+}
+
+.left {
+  width: 100%;
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: 65px 1.5rem 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  align-items: center;
+  position: relative;
+}
+
+.contact-heading h3 {
+  font-weight: 600;
+  color: black;
+  font-size: 2.5rem;
+  line-height: 0.9;
+  white-space: nowrap;
+  margin-bottom: 1.2rem;
+}
+
+.contact-heading h1 span {
+  color: black;
+}
+
+.text {
+  color: #9ca7b6;
+  line-height: 1.1;
+  font-size: 1rem;
+}
+
+.form-wrapper {
+  max-width: 32rem;
+}
+
+.contact-form {
+  display: grid;
+  margin-top: 2.55rem;
+  grid-template-columns: repeat(2, 1fr);
+  column-gap: 2rem;
+  row-gap: 1rem;
+}
+
+.input-wrap {
+  position: relative;
+}
+
+.input-wrap.w-100 {
+  grid-column: span 2;
+}
+
+input::-webkit-contacts-auto-fill-button {
+  visibility: hidden;
+  display: none !important;
+  pointer-events: none;
+  position: absolute;
+  right: 0;
+}
+
+.contact-input {
+  width: 100%;
+  background-color: var(--input-bg);
+  padding: 1.5rem 1.35rem calc(0.75rem - 2px) 1.35rem;
+  outline: none;
+  font-family: inherit;
+  border-radius: 20px;
+  color: var(--text-color);
+  font-weight: 600;
+  font-size: 0.95rem;
+  border: 2px solid transparent;
+  box-shadow: 0 0 0 0 hsla(var(--main-hue), 92%, 54%, 0.169);
+  transition: 0.3s;
+}
+
+.contact-input:hover {
+  background-color: var(--input-bg-hover);
+}
+
+.input-wrap label {
+  font-size: 1rem;
+  position: absolute;
+  top: 50%;
+  left: calc(1.35rem + 2px);
+  transform: translateY(-50%);
+  color: var(--light-text-color);
+  pointer-events: none;
+  transition: 0.25s;
+}
+
+.input-wrap .icon {
+  position: absolute;
+  right: calc(1.35rem + 2px);
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: var(--input-text);
+  font-size: 1.25rem;
+  transition: 0.3s;
+
+}
+
+textarea.contact-input {
+  resize: none;
+  width: 100%;
+  min-height: 150px;
+}
+
+textarea.contact-input ~ label{
+  top: 1.2rem;
+  transform: none;
+}
+
+textarea.contact-input ~ .icon{
+  top: 1.3rem;
+  transform: none;
+}
+
+.input-wrap.focus .contact-input {
+  background-color: var(--bg-color);
+  border: 2px solid var(--light-main-color);
+  box-shadow: 0 0 0 4px hsla(var(--main-hue), 91%, 55%, 0.11);
+}
+
+.input-wrap.focus label {
+  color: var(--light-main-color);
+}
+
+.input-wrap.focus .icon {
+  color: var(--light-main-color);
+}
+
+.input-wrap.not-empty label {
+  font-size: 0.7rem;
+  top: 0.75rem;
+  transform: translateY(0);
+}
+
+.contact-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 1rem;
+  margin-top: 1rem;
+  width: 100%;
+  grid-column: span 2;
+}
+
+.btn {
+  display: inline-block;
+  padding: 1.1rem 2rem;
+  background-color: var(--main-color);
+  color: #fff;
+  border-radius: 40px;
+  border: none;
+  font-family: inherit;
+  font-weight: 500;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.btn:hover {
+  background-color: var(--main-color-hover);
+}
+
+.btn.upload {
+  position: relative;
+  background-color: var(--input-bg);
+}
+
+.btn.upload:hover {
+  position: relative;
+  background-color: #DB504A4C;
+}
+
+.upload span {
+  color: var(--red);
+}
+
+.btn upload input{
+  display: none;
+}

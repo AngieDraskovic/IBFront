@@ -1,0 +1,15 @@
+<div class="dropdown">
+  <div class="select" [class.select-clicked]="menuOpen" (click)="toggleMenu()">
+    <i class="fa-solid fa-message"></i>
+    <span class="selected" [class.placeholder]="!selectedOption">
+      {{ selectedOption ? selectedOption : placeholder }}
+    </span>
+    <div class="caret" [class.caret-rotate]="menuOpen"></div>
+  </div>
+
+  <ul class="menu" [class.menu-open]="menuOpen">
+    <li *ngFor="let option of options" [class.active]="option === selectedOption" (click)="selectOption(option)">
+      {{ option }}
+    </li>
+  </ul>
+</div>

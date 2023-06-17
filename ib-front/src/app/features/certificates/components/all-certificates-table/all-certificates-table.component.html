@@ -1,0 +1,50 @@
+<div class="table-data">
+  <div class="order">
+    <div class="head">
+      <h3>All certificates</h3>
+      <i class='bx bx-search'></i>
+      <i class='bx bx-filter'></i>
+    </div>
+    <table>
+      <thead>
+      <tr>
+        <th>Owner</th>
+        <th>Type</th>
+        <th>Valid From</th>
+        <th>Valid To</th>
+        <th>Status</th>
+        <th class="button"></th>
+        <th *ngIf="role==Role.Admin" class="button"></th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr
+        *ngFor="let certificate of allCertificates | paginate: { id: 'allCertificates', itemsPerPage: itemsPerPage, currentPage: currentPage, totalItems: totalItems }">
+        <td>
+          <img ngSrc="assets/images/profile.png" width="60" height="40" alt="">
+          <p>{{ certificate.userEmail }}</p>
+        </td>
+        <td><span class="type">{{certificate.type}}</span></td>
+        <td>{{ certificate.validFrom | date:'dd-MM-yyyy' }}</td>
+        <td>{{ certificate.validTo | date:'dd-MM-yyyy' }}</td>
+        <td><span class="status {{ certificate.status.toLowerCase() }}">{{ certificate.status }}</span></td>
+        <td>
+          <i class='download-button fa-regular fa-file-arrow-down'
+             (click)="downloadCertificate(certificate.serialNumber)"></i>
+        </td>
+
+        <td *ngIf="role==Role.Admin">
+          <i class='download-key fa-regular fa-key'
+             (click)="downloadPrivateKey(certificate.serialNumber)"></i>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+
+    <pagination-controls
+      id="allCertificates"
+      (pageChange)="onPageChanged($event)"
+    >
+    </pagination-controls>
+  </div>
+</div>

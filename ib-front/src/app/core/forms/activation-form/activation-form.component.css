@@ -1,0 +1,43 @@
+form {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  max-width: 400px;
+  margin: auto;
+}
+
+.title {
+  font-size: 2.2rem;
+  color: #444;
+  margin-bottom: 10px;
+}
+
+.input {
+  width: 100%;
+}
+
+.activation-text {
+  max-width: 400px;
+  font-size: 1rem;
+  margin: 12px 0;
+  text-align: center;
+}
+
+.activation-text span {
+  color: var(--blue);
+}
+
+
+.btn-container {
+  max-width: 400px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+@media (max-width: 570px) {
+  form {
+    padding: 0 1.5rem;
+  }
+}

@@ -1,0 +1,25 @@
+<app-auth-form
+  class="step"
+  [ngClass]="animationType + (currentStep === RegisterStep.AuthForm ? ' active' : '')"
+  (onAuthSubmit)="nextStep()"
+  (accountActivationNavigate)="accountActivationNavigate()"
+>
+</app-auth-form>
+
+<app-more-info-form
+  class="step"
+  [ngClass]="animationType + (currentStep === RegisterStep.MoreInfoForm ? ' active' : '')"
+  (onMoreInfoSubmit)="nextStep()"
+  (onBack)="onBack()"
+>
+</app-more-info-form>
+
+<app-activation-form
+  class="step"
+  [ngClass]="animationType + (currentStep === RegisterStep.AccountActivationForm ? ' active' : '')"
+  (onActivationSubmit)="nextStep()"
+  (onBack)="onBack()"
+>
+</app-activation-form>
+
+<app-spinner *ngIf="loadingService.isLoading | async"></app-spinner>
